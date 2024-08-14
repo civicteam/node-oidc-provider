@@ -12,6 +12,7 @@ import Provider from '../lib/index.js'; // from 'oidc-provider';
 import Account from './support/account.js';
 import configuration from './support/configuration.js';
 import routes from './routes/koa.js';
+import serve from 'koa-static';
 
 const __dirname = dirname(import.meta.url);
 
@@ -72,6 +73,7 @@ try {
     root: path.join(__dirname, 'views'),
   });
   provider.use(routes(provider).routes());
+  provider.use(serve(path.join(__dirname, 'credentials')));
   server = provider.listen(PORT, () => {
     console.log(`application is listening on port ${PORT}, check its /.well-known/openid-configuration`);
   });
