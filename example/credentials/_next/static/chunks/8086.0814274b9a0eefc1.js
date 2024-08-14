@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[8086],{18086:function(t,e,i){i.r(e),e.default={src:"/_next/static/media/optimism.4ba849bf.svg",height:500,width:500,blurWidth:0,blurHeight:0}}}]);
+//# sourceMappingURL=8086.0814274b9a0eefc1.js.map

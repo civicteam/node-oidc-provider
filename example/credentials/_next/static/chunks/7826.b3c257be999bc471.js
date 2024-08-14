@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[7826],{57826:function(t,e,h){h.r(e),e.default={src:"/_next/static/media/polygon.b26d846d.svg",height:28,width:28,blurWidth:0,blurHeight:0}}}]);
+//# sourceMappingURL=7826.b3c257be999bc471.js.map

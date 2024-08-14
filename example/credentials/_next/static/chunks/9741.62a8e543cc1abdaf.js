@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[9741],{59741:function(e,t,h){h.r(t),t.default={src:"/_next/static/media/avalanche.f6d57d19.svg",height:1504,width:1503,blurWidth:0,blurHeight:0}}}]);
+//# sourceMappingURL=9741.62a8e543cc1abdaf.js.map

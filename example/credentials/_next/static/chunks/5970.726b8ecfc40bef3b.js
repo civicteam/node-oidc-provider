@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[5970],{35970:function(e,t,h){h.r(t),t.default={src:"/_next/static/media/celo.44511272.svg",height:950,width:950,blurWidth:0,blurHeight:0}}}]);
+//# sourceMappingURL=5970.726b8ecfc40bef3b.js.map

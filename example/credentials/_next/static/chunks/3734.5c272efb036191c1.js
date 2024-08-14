@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[3734],{83734:function(e,t,h){h.r(t),t.default={src:"/_next/static/media/ethereum.6ef6f72a.svg",height:28,width:28,blurWidth:0,blurHeight:0}}}]);
+//# sourceMappingURL=3734.5c272efb036191c1.js.map

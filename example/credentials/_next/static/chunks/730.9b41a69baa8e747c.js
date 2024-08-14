@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[730],{10730:function(e,t,c){c.r(t),t.default={src:"/_next/static/media/base.1bc7ecca.svg",height:111,width:111,blurWidth:0,blurHeight:0}}}]);
+//# sourceMappingURL=730.9b41a69baa8e747c.js.map

@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[2120],{12120:function(t,e,h){h.r(e),e.default={src:"/_next/static/media/fantom.18f1e894.svg",height:317,width:317,blurWidth:0,blurHeight:0}}}]);
+//# sourceMappingURL=2120.570416658f172329.js.map
