@@ -50,7 +50,7 @@ export default (provider) => {
 
     switch (prompt.name) {
       case 'login': {
-        return ctx.render('login', {
+        /*return ctx.render('login', {
           client,
           uid,
           details: prompt.details,
@@ -62,7 +62,9 @@ export default (provider) => {
             params: debug(params),
             prompt: debug(prompt),
           },
-        });
+        });*/
+        //return ctx.redirect('/index.html');
+        return ctx.redirect(`http://localhost:3020?uid=${uid}`);
       }
       case 'consent': {
         return ctx.render('interaction', {
@@ -93,10 +95,16 @@ export default (provider) => {
   });
 
   router.post('/interaction/:uid/login', body, async (ctx) => {
-    const { prompt: { name } } = await provider.interactionDetails(ctx.req, ctx.res);
-    assert.equal(name, 'login');
+    const details = await provider.interactionDetails(ctx.req, ctx.res);
+    console.log(details);
+    //const { prompt: { address } } = await provider.interactionDetails(ctx.req, ctx.res);
+    //assert.equal(address, 'address');
 
-    const account = await Account.findByLogin(ctx.request.body.login);
+    const account = await Account.findByLogin(ctx.request.body.address);
+    account.civic = {
+      address: ctx.request.body.address,
+      credential: ctx.request.body.credential,
+    };
 
     const result = {
       login: {
@@ -104,9 +112,12 @@ export default (provider) => {
       },
     };
 
-    return provider.interactionFinished(ctx.req, ctx.res, result, {
+    const finished = await provider.interactionFinished(ctx.req, ctx.res, result, {
       mergeWithLastSubmission: false,
     });
+    console.log(finished);
+
+    return;
   });
 
   router.post('/interaction/:uid/federated', body, async (ctx) => {

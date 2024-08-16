@@ -4,6 +4,8 @@ const store = new Map();
 const logins = new Map();
 
 class Account {
+  civic = undefined;
+
   constructor(id, profile) {
     this.accountId = id || nanoid();
     this.profile = profile;
@@ -60,6 +62,10 @@ class Account {
       updated_at: 1454704946,
       website: 'http://example.com',
       zoneinfo: 'Europe/Berlin',
+      civic: {
+        address: this.civic.address,
+        credential: this.civic.credential
+      }
     };
   }
 

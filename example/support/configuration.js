@@ -1,11 +1,11 @@
 export default {
   clients: [
-    // {
-    //   client_id: 'oidcCLIENT',
-    //   client_secret: '...',
-    //   grant_types: ['refresh_token', 'authorization_code'],
-    //   redirect_uris: ['http://sso-client.dev/providers/7/open_id', 'http://sso-client.dev/providers/8/open_id'],
-    // }
+    {
+      client_id: 'oidcCLIENT',
+      client_secret: 'oidcCLIENT',
+      grant_types: ['refresh_token', 'authorization_code'],
+      redirect_uris: ['http://localhost:8080/realms/master/broker/oidc/endpoint', 'http://localhost:4200/signin-callback.html'],
+    }
   ],
   interactions: {
     url(ctx, interaction) { // eslint-disable-line no-unused-vars
@@ -21,6 +21,7 @@ export default {
     phone: ['phone_number', 'phone_number_verified'],
     profile: ['birthdate', 'family_name', 'gender', 'given_name', 'locale', 'middle_name', 'name',
       'nickname', 'picture', 'preferred_username', 'profile', 'updated_at', 'website', 'zoneinfo'],
+    civic: ['civic']
   },
   features: {
     devInteractions: { enabled: false }, // defaults to true
