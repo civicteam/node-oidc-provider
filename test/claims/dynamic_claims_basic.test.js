@@ -1,25 +1,16 @@
 import { expect } from 'chai';
 
 import Provider from '../../lib/index.js';
+import instance from '../../lib/helpers/weak_cache.js';
+import bootstrap from '../test_helper.js';
 
 describe('allowDynamicClaims basic functionality', () => {
   describe('when allowDynamicClaims is false (default)', () => {
-    it('should filter out dynamic claims from Claims helper', async () => {
-      const provider = new Provider('https://op.example.com', {
-        allowDynamicClaims: false, // Explicit false
-        claims: {
-          openid: ['sub'],
-          email: ['email'],
-        },
-      });
+    before(bootstrap(import.meta.url, { config: 'claims_dynamic' }));
 
-      // Create a mock client
-      const client = {
-        clientId: 'test-client',
-        subjectType: 'public',
-      };
-
-      const { Claims } = provider;
+    it('should filter out dynamic claims from Claims helper', async function () {
+      const client = await this.provider.Client.find('client');
+      const { Claims } = this.provider;
 
       const availableClaims = {
         sub: 'user123',
@@ -49,22 +40,11 @@ describe('allowDynamicClaims basic functionality', () => {
   });
 
   describe('when allowDynamicClaims is true', () => {
-    it('should include dynamic claims from Claims helper', async () => {
-      const provider = new Provider('https://op.example.com', {
-        allowDynamicClaims: true, // Enable dynamic claims
-        claims: {
-          openid: ['sub'],
-          email: ['email'],
-        },
-      });
+    before(bootstrap(import.meta.url, { config: 'claims_dynamic_enabled' }));
 
-      // Create a mock client
-      const client = {
-        clientId: 'test-client',
-        subjectType: 'public',
-      };
-
-      const { Claims } = provider;
+    it('should include dynamic claims from Claims helper', async function () {
+      const client = await this.provider.Client.find('client');
+      const { Claims } = this.provider;
 
       const availableClaims = {
         sub: 'user123',
@@ -110,19 +90,21 @@ describe('allowDynamicClaims basic functionality', () => {
       // Create a mock context with claims parameter
       const mockCtx = {
         oidc: {
-          params: {
-            claims: JSON.stringify({
-              id_token: {
-                email: null,
-                dynamic_claim: null, // Should be filtered
-                external_claim: null, // Should be filtered
-              },
-            }),
-          },
+          provider,
         },
       };
 
       const oidcContext = new provider.OIDCContext(mockCtx);
+      // Set the params directly on the oidcContext
+      oidcContext.params = {
+        claims: JSON.stringify({
+          id_token: {
+            email: null,
+            dynamic_claim: null, // Should be filtered
+            external_claim: null, // Should be filtered
+          },
+        }),
+      };
       const requestParamClaims = oidcContext.requestParamClaims;
 
       // Should only include static claims
@@ -143,19 +125,21 @@ describe('allowDynamicClaims basic functionality', () => {
       // Create a mock context with claims parameter
       const mockCtx = {
         oidc: {
-          params: {
-            claims: JSON.stringify({
-              id_token: {
-                email: null,
-                dynamic_claim: null, // Should be included
-                external_claim: null, // Should be included
-              },
-            }),
-          },
+          provider,
         },
       };
 
       const oidcContext = new provider.OIDCContext(mockCtx);
+      // Set the params directly on the oidcContext
+      oidcContext.params = {
+        claims: JSON.stringify({
+          id_token: {
+            email: null,
+            dynamic_claim: null, // Should be included
+            external_claim: null, // Should be included
+          },
+        }),
+      };
       const requestParamClaims = oidcContext.requestParamClaims;
 
       // Should include both static and dynamic claims
@@ -174,7 +158,7 @@ describe('allowDynamicClaims basic functionality', () => {
       });
 
       // Access the configuration via internal API
-      const config = provider.configuration || provider.issuer.configuration;
+      const config = instance(provider).configuration;
       expect(config.allowDynamicClaims).to.equal(false);
     });
 
@@ -186,7 +170,7 @@ describe('allowDynamicClaims basic functionality', () => {
         },
       });
 
-      const config = provider.configuration || provider.issuer.configuration;
+      const config = instance(provider).configuration;
       expect(config.allowDynamicClaims).to.equal(true);
     });
 
@@ -198,7 +182,7 @@ describe('allowDynamicClaims basic functionality', () => {
         },
       });
 
-      const config = provider.configuration || provider.issuer.configuration;
+      const config = instance(provider).configuration;
       expect(config.allowDynamicClaims).to.equal(false);
     });
   });

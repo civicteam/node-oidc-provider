@@ -22,10 +22,10 @@ config.claims = {
 };
 
 // Override findAccount to simulate external API integration
-config.findAccount = async function(ctx, sub) {
+config.findAccount = async function(_ctx, sub) {
   return {
     accountId: sub,
-    async claims(use, scope) {
+    async claims(_use, scope) {
       const baseClaims = {
         sub,
         email: 'test@example.com',

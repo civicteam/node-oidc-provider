@@ -4,7 +4,7 @@ import bootstrap from '../test_helper.js';
 
 describe('Claims helper with allowDynamicClaims', () => {
   describe('when allowDynamicClaims is false (default)', () => {
-    before(bootstrap(import.meta.url));
+    before(bootstrap(import.meta.url, { config: 'claims_dynamic' }));
 
     it('should filter out non-static claims', async function () {
       const client = await this.provider.Client.find('client');
@@ -61,7 +61,7 @@ describe('Claims helper with allowDynamicClaims', () => {
   });
 
   describe('when allowDynamicClaims is true', () => {
-    before(bootstrap(import.meta.url.replace('.test.js', '_enabled.config.js')));
+    before(bootstrap(import.meta.url, { config: 'claims_dynamic_enabled' }));
 
     it('should include dynamic claims', async function () {
       const client = await this.provider.Client.find('client');
@@ -83,13 +83,15 @@ describe('Claims helper with allowDynamicClaims', () => {
       
       const result = await claims.result();
 
-      expect(result).to.have.keys('sub', 'email', 'name');
+      expect(result).to.have.keys('sub', 'email', 'name', 'dynamic_claim', 'external_api_claim', 'tenant_specific');
       expect(result.sub).to.equal('user123');
       expect(result.email).to.equal('test@example.com');
       expect(result.name).to.equal('Test User');
+      expect(result.dynamic_claim).to.equal('dynamic_value');
+      expect(result.external_api_claim).to.equal('from_api');
+      expect(result.tenant_specific).to.equal('tenant_data');
       
-      // Note: scope-based claims may not include dynamic claims unless explicitly requested
-      // Let's test with explicit mask
+      // With allowDynamicClaims: true, ALL available claims are included
     });
 
     it('should include dynamic claims when explicitly masked', async function () {
@@ -218,6 +220,8 @@ describe('Claims helper with allowDynamicClaims', () => {
   });
 
   describe('configuration edge cases', () => {
+    before(bootstrap(import.meta.url, { config: 'claims_dynamic' }));
+
     it('should handle provider without explicit allowDynamicClaims config', async function () {
       // Use the existing provider which has default configuration
       const client = await this.provider.Client.find('client');

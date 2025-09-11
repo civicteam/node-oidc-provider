@@ -4,10 +4,10 @@ import getConfig from '../default.config.js';
 
 const config = getConfig();
 
-// Enable claims parameter feature for testing
+// Enable claims parameter feature for testing (same as working claims.config.js)
 merge(config.features, { claimsParameter: { enabled: true } });
 
-// Enable dynamic claims
+// Enable dynamic claims - this is the only new addition
 config.allowDynamicClaims = true;
 
 // Add some scopes for testing
@@ -21,23 +21,9 @@ config.claims = {
   custom: [], // Empty but scope exists
 };
 
-// Override findAccount to return dynamic claims
-config.findAccount = async function(ctx, sub) {
-  return {
-    accountId: sub,
-    async claims() {
-      return {
-        sub,
-        email: 'test@example.com',
-        name: 'Test User',
-        // Return dynamic claims that aren't in static configuration
-        dynamic_claim: 'dynamic_value',
-        external_api_claim: 'from_external_api',
-        tenant_specific_claim: 'tenant_123',
-      };
-    },
-  };
-};
+// Don't override findAccount - use the default test Account
+// This will use the test framework's Account.findAccount method
+// We'll modify the Account claims in the test instead
 
 export default {
   config,
