@@ -148,3 +148,85 @@ With only this flag set, the cookies will still be set by the auth server, and c
    - Only emitted when `refreshTolerance.gracePeriodSeconds` is configured and greater than 0
    - Not emitted for tokens that are reused beyond their grace period (those trigger errors instead)
    - Provides full context about the request and token for comprehensive logging
+
+7. Dynamic Claims Support (`allowDynamicClaims`)
+   The library now supports bypassing static claims filtering to enable fully dynamic claim mappings from external sources. When enabled, claims returned by `findAccount.claims()` can include arbitrary claims without being restricted to the statically configured `claimsSupported` list.
+
+   ```js
+   new Provider(issuer, {
+     allowDynamicClaims: true, // Enable dynamic claims bypass
+     // Standard static claims configuration still works
+     claims: {
+       openid: ['sub'],
+       email: ['email'],
+       profile: ['name', 'family_name', 'picture'],
+     },
+     async findAccount(ctx, sub, token) {
+       return {
+         accountId: sub,
+         async claims(use, scope, claims, rejected) {
+           // Can now return arbitrary claims from external API
+           const dynamicClaims = await fetchClaimsFromExternalAPI(sub, scope);
+           return { sub, ...dynamicClaims };
+         },
+       };
+     },
+   })
+   ```
+
+   **How it works:**
+   - When `allowDynamicClaims: false` (default): Only claims listed in the static `claimsSupported` configuration are included in tokens and userinfo responses
+   - When `allowDynamicClaims: true`: Claims returned by `findAccount.claims()` bypass static filtering and can include any arbitrary claims
+   - Applies to both the main claims filtering in tokens/userinfo and the claims parameter validation
+   - Grant-level security filtering remains active to ensure proper scope and consent enforcement
+
+   **Use Cases:**
+   - **External Claim Providers**: Integrate with external identity providers or claim services that provide dynamic claim mappings
+   - **Multi-tenant Systems**: Support tenant-specific claims without restarting the authorization server
+   - **API-driven Claims**: Allow claims configuration to be managed through APIs rather than static configuration
+   - **Flexible Identity Systems**: Support evolving claim requirements without code deployments
+
+   **Security Considerations:**
+   - **Reduced Static Validation**: Bypasses the safety net of static claims configuration validation
+   - **External API Security**: Requires careful security validation of external claim sources
+   - **Trust Requirements**: The authorization server must fully trust the account provider implementation
+   - **Grant Permissions Remain**: Grant-level filtering still enforces proper scoping and consent
+
+   **OAuth/OIDC Specification Compliance:**
+   This feature maintains full compliance with OAuth 2.0 and OIDC specifications. The spec allows for dynamic claims as long as proper scoping and consent are enforced, which this implementation preserves through grant-level filtering.
+
+   **Implementation Details:**
+   - Modifies claims filtering in `lib/helpers/claims.js` to bypass `claimsSupported` checks when enabled
+   - Updates claims parameter validation in `lib/helpers/oidc_context.js` to accept dynamic claims
+   - Preserves all existing security mechanisms at the grant and scope levels
+   - Backward compatible: default behavior unchanged when flag is `false`
+
+   **Usage Example:**
+   ```js
+   // Dynamic claims with external API integration
+   new Provider(issuer, {
+     allowDynamicClaims: true,
+     async findAccount(ctx, sub) {
+       return {
+         accountId: sub,
+         async claims(use, scope, claims, rejected) {
+           // Base claims
+           const baseClaims = { sub };
+           
+           // Fetch dynamic claims from external service
+           try {
+             const externalClaims = await fetch(`https://claims-api.example.com/user/${sub}/claims`, {
+               headers: { 'Authorization': `Bearer ${API_TOKEN}` }
+             }).then(r => r.json());
+             
+             return { ...baseClaims, ...externalClaims };
+           } catch (error) {
+             // Fallback to base claims on API failure
+             console.error('External claims API failed:', error);
+             return baseClaims;
+           }
+         },
+       };
+     },
+   })
+   ```
