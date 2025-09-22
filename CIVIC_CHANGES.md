@@ -190,3 +190,40 @@ With only this flag set, the cookies will still be set by the auth server, and c
 
    **OAuth/OIDC Specification Compliance:**
    This is a cookie management enhancement that doesn't affect OAuth/OIDC protocol compliance. It's an implementation detail for proper session cleanup in multi-component authentication systems.
+
+8. Session Mismatch Check Bypass for Cookieless Mode (`bypassSessionMismatchCheck`)
+   When the `shouldWriteCookies` function returns false (indicating cookieless mode), the session mismatch check between interaction session and authentication session is bypassed.
+
+   **Problem Solved:**
+   In cookieless mode, the session mismatch check can prevent legitimate authentication flows when the interaction session UID doesn't match the authentication session UID. This commonly occurs when cookies are disabled for iframe authentication or when using the `shouldWriteCookies` function to conditionally disable cookies.
+
+   **How it works:**
+   - The session mismatch check in `lib/actions/authorization/resume.js` now calls `shouldWriteCookies(ctx)` to determine if cookies are enabled
+   - If `shouldWriteCookies` returns false, the session mismatch check is bypassed
+   - If `shouldWriteCookies` returns true (or is not defined), the original session mismatch validation remains active
+
+   **Security Trade-offs:**
+   - **Reduced security**: Bypassing session mismatch check reduces the ability to verify that the interaction originated from the same session
+   - **Justified risk**: In cookieless scenarios, this check cannot function properly anyway since session cookies aren't available for verification
+   - **Mitigation**: The interaction ID still needs to be valid and the interaction must exist, providing some protection against unauthorized access
+
+   **OAuth/OIDC Specification Compliance:**
+   This change doesn't directly affect OAuth/OIDC protocol compliance. Session mismatch checking is an additional security layer beyond what the specifications require. The change only affects this when cookies are explicitly disabled via configuration.
+
+   **Code Change:**
+   ```js
+   // Before: Always check session mismatch
+   if (originSession?.uid && originSession.uid !== session.uid) {
+     throw new errors.SessionNotFound("interaction session and authentication session mismatch");
+   }
+
+   // After: Bypass check when cookies are disabled
+   if (originSession?.uid && originSession.uid !== session.uid && (await shouldWriteCookies(ctx))) {
+     throw new errors.SessionNotFound("interaction session and authentication session mismatch");
+   }
+   ```
+
+   **Use Cases:**
+   - Iframe-based authentication where cookies are restricted by browser policies
+   - Cookieless authentication flows using the `shouldWriteCookies` configuration function
+   - Third-party authentication contexts where cookies cannot be reliably set or read

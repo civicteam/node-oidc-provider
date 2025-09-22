@@ -416,6 +416,47 @@ describe('devInteractions', () => {
         .expect(/interaction session and authentication session mismatch/);
     });
 
+    it('bypasses session mismatch check when shouldWriteCookies returns false', async function () {
+      // Configure doNotSet to true, which makes shouldWriteCookies helper return false
+      const cookieConfig = i(this.provider).configuration.cookies;
+      const originalDoNotSet = cookieConfig.doNotSet;
+      const originalShouldWriteCookies = cookieConfig.shouldWriteCookies;
+
+      // Set doNotSet to true and clear any custom shouldWriteCookies function
+      cookieConfig.doNotSet = true;
+      delete cookieConfig.shouldWriteCookies;
+
+      try {
+        let location;
+        await this.agent.post(`${this.url}`)
+          .send({
+            prompt: 'consent',
+          })
+          .type('form')
+          .expect(303)
+          .expect('location', new RegExp(this.url.replace('interaction', 'auth')))
+          .expect(({ headers }) => {
+            ({ location } = headers);
+          });
+
+        await this.login();
+
+        // This should NOT throw session mismatch error because shouldWriteCookies returns false
+        // The key test is that we don't get a 400 error (session mismatch)
+        await this.agent.get(new URL(location).pathname)
+          .expect((res) => {
+            // Should not be 400 (session mismatch error) - this proves the bypass works
+            expect(res.status).to.not.equal(400);
+          });
+      } finally {
+        // Restore original config
+        cookieConfig.doNotSet = originalDoNotSet;
+        if (originalShouldWriteCookies !== undefined) {
+          cookieConfig.shouldWriteCookies = originalShouldWriteCookies;
+        }
+      }
+    });
+
     handlesInteractionSessionErrors();
   });
 });
