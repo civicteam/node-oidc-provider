@@ -441,82 +441,91 @@ location / {
 
 ## Configuration options
 
+<!-- DO NOT EDIT, COMMIT OR STAGE CHANGES BELOW THIS LINE -->
+<!-- START CONF OPTIONS -->
+
 **Table of Contents**
 
 > ❗ marks the configuration you most likely want to take a look at.
 
-- [adapter ❗](#adapter)
-- [clients ❗](#clients)
-- [findAccount ❗](#findaccount)
-- [jwks ❗](#jwks)
-- [features ❗](#features)
-  - [backchannelLogout](#featuresbackchannellogout)
-  - [ciba](#featuresciba)
-  - [claimsParameter](#featuresclaimsparameter)
-  - [clientCredentials](#featuresclientcredentials)
-  - [deviceFlow](#featuresdeviceflow)
-  - [devInteractions ❗](#featuresdevinteractions)
-  - [dPoP](#featuresdpop)
-  - [encryption](#featuresencryption)
-  - [fapi](#featuresfapi)
-  - [introspection](#featuresintrospection)
-  - [jwtIntrospection](#featuresjwtintrospection)
-  - [jwtResponseModes](#featuresjwtresponsemodes)
-  - [jwtUserinfo](#featuresjwtuserinfo)
-  - [mTLS](#featuresmtls)
-  - [pushedAuthorizationRequests](#featurespushedauthorizationrequests)
-  - [registration](#featuresregistration)
-  - [registrationManagement](#featuresregistrationmanagement)
-  - [requestObjects](#featuresrequestobjects)
-  - [resourceIndicators ❗](#featuresresourceindicators)
-  - [revocation](#featuresrevocation)
-  - [rpInitiatedLogout](#featuresrpinitiatedlogout)
-  - [userinfo](#featuresuserinfo)
+- [adapter ❗](#adapter) - Storage Adapter
+- [claims ❗](#claims) - Available Claims
+- [clientBasedCORS ❗](#clientbasedcors) - Cross-Origin Resource Sharing (CORS)
+- [clients ❗](#clients) - Statically Configured Clients
+- [features ❗](#features) - Feature Configurations
+  - [devInteractions ❗](#featuresdevinteractions) - Development-only Interaction Views
+  - [resourceIndicators ❗](#featuresresourceindicators) - RFC8707 - Resource Indicators for OAuth 2.0
+  - [backchannelLogout](#featuresbackchannellogout) - OIDC Back-Channel Logout 1.0
+  - [ciba](#featuresciba) - OIDC Client Initiated Backchannel Authentication Flow (CIBA)
+  - [claimsParameter](#featuresclaimsparameter) - OIDC Core 1.0 - Requesting Claims using the "claims" Request Parameter
+  - [clientCredentials](#featuresclientcredentials) - RFC6749 - Client Credentials
+  - [deviceFlow](#featuresdeviceflow) - RFC8628 - OAuth 2.0 Device Authorization Grant (Device Flow)
+  - [dPoP](#featuresdpop) - RFC9449 - OAuth 2.0 Demonstration of Proof-of-Possession at the Application Layer (DPoP)
+  - [encryption](#featuresencryption) - JWE Encryption
+  - [fapi](#featuresfapi) - FAPI Security Profiles
+  - [introspection](#featuresintrospection) - RFC7662 - OAuth 2.0 Token Introspection
+  - [jwtIntrospection](#featuresjwtintrospection) - RFC9701 - JWT Response for OAuth Token Introspection
+  - [jwtResponseModes](#featuresjwtresponsemodes) - JWT Secured Authorization Response Mode (JARM)
+  - [jwtUserinfo](#featuresjwtuserinfo) - OIDC Core 1.0 - JWT UserInfo Endpoint Responses
+  - [mTLS](#featuresmtls) - RFC8705 - OAuth 2.0 Mutual TLS Client Authentication and Certificate Bound Access Tokens (MTLS)
+  - [pushedAuthorizationRequests](#featurespushedauthorizationrequests) - RFC9126 - OAuth 2.0 Pushed Authorization Requests (PAR)
+  - [registration](#featuresregistration) - OIDC Dynamic Client Registration 1.0 and RFC7591 - OAuth 2.0 Dynamic Client Registration Protocol
+  - [registrationManagement](#featuresregistrationmanagement) - RFC7592 - OAuth 2.0 Dynamic Client Registration Management Protocol
+  - [requestObjects](#featuresrequestobjects) - OIDC Core 1.0 and RFC9101 - Passing a Request Object by Value (JAR)
+  - [revocation](#featuresrevocation) - RFC7009 - OAuth 2.0 Token Revocation
+  - [rpInitiatedLogout](#featuresrpinitiatedlogout) - OIDC RP-Initiated Logout 1.0
+  - [userinfo](#featuresuserinfo) - OIDC Core 1.0 - UserInfo Endpoint
   - Experimental features:
-    - [attestClientAuth](#featuresattestclientauth)
-    - [externalSigningSupport (e.g. KMS)](#featuresexternalsigningsupport)
-    - [richAuthorizationRequests](#featuresrichauthorizationrequests)
-    - [rpMetadataChoices](#featuresrpmetadatachoices)
-    - [webMessageResponseMode](#featureswebmessageresponsemode)
-- [acrValues](#acrvalues)
-- [allowOmittingSingleRegisteredRedirectUri](#allowomittingsingleregisteredredirecturi)
-- [assertJwtClientAuthClaimsAndHeader](#assertjwtclientauthclaimsandheader)
-- [claims ❗](#claims)
-- [clientBasedCORS ❗](#clientbasedcors)
-- [clientDefaults](#clientdefaults)
-- [clockTolerance](#clocktolerance)
-- [conformIdTokenClaims](#conformidtokenclaims)
-- [cookies](#cookies)
-- [discovery](#discovery)
-- [enableHttpPostMethods](#enablehttppostmethods)
-- [expiresWithSession](#expireswithsession)
-- [extraClientMetadata](#extraclientmetadata)
-- [extraParams](#extraparams)
-- [extraTokenClaims](#extratokenclaims)
-- [fetch](#fetch)
-- [interactions ❗](#interactions)
-- [issueRefreshToken](#issuerefreshtoken)
-- [loadExistingGrant](#loadexistinggrant)
-- [pairwiseIdentifier](#pairwiseidentifier)
-- [pkce ❗](#pkce)
-- [renderError](#rendererror)
-- [responseTypes](#responsetypes)
-- [revokeGrantPolicy](#revokegrantpolicy)
-- [rotateRefreshToken](#rotaterefreshtoken)
-- [routes](#routes)
-- [sectorIdentifierUriValidate](#sectoridentifierurivalidate)
-- [scopes](#scopes)
-- [subjectTypes](#subjecttypes)
-- [clientAuthMethods](#clientauthmethods)
-- [ttl ❗](#ttl)
-- [enabledJWA](#enabledjwa)
+    - [attestClientAuth](#featuresattestclientauth) - draft-ietf-oauth-attestation-based-client-auth-06 - OAuth 2.0 Attestation-Based Client Authentication
+    - [clientIdMetadataDocument](#featuresclientidmetadatadocument) - `draft-ietf-oauth-client-id-metadata-document-01` - OAuth Client ID Metadata Document (CIMD)
+    - [externalSigningSupport](#featuresexternalsigningsupport) - External Signing Support
+    - [richAuthorizationRequests](#featuresrichauthorizationrequests) - RFC9396 - OAuth 2.0 Rich Authorization Requests
+    - [rpMetadataChoices](#featuresrpmetadatachoices) - OIDC Relying Party Metadata Choices 1.0 - Implementers Draft 01
+    - [webMessageResponseMode](#featureswebmessageresponsemode) - draft-sakimura-oauth-wmrm-01 - OAuth 2.0 Web Message Response Mode
+- [findAccount ❗](#findaccount) - Account Loading and Claims Resolution
+- [interactions ❗](#interactions) - End-User Interaction Policy
+- [jwks ❗](#jwks) - JSON Web Key Set (JWKS)
+- [pkce ❗](#pkce) - RFC7636 - Proof Key for Code Exchange (PKCE)
+- [ttl ❗](#ttl) - Artifact Expirations (TTL)
+- [acceptQueryParamAccessTokens](#acceptqueryparamaccesstokens) - Query Parameter Access Tokens
+- [acrValues](#acrvalues) - Authentication Context Class References
+- [allowOmittingSingleRegisteredRedirectUri](#allowomittingsingleregisteredredirecturi) - Redirect URI Parameter Omission for Single Registered URI
+- [assertJwtClientAuthClaimsAndHeader](#assertjwtclientauthclaimsandheader) - JWT Client Authentication Assertion Validation
+- [clientAuthMethods](#clientauthmethods) - Supported Client Authentication Methods
+- [clientDefaults](#clientdefaults) - Default Client Metadata
+- [clockTolerance](#clocktolerance) - Clock Skew Tolerance
+- [conformIdTokenClaims](#conformidtokenclaims) - ID Token Claims Conformance
+- [cookies](#cookies) - HTTP Cookie Configuration
+- [discovery](#discovery) - Extending the Discovery Document
+- [enabledJWA](#enabledjwa) - Supported JSON Web Algorithms (JWA)
+- [enableHttpPostMethods](#enablehttppostmethods) - HTTP POST Method Support
+- [expiresWithSession](#expireswithsession) - Session-Bound Token Expiration
+- [extraClientMetadata](#extraclientmetadata) - Custom Client Metadata Properties
+- [extraParams](#extraparams) - Additional Authorization Request Parameters
+- [extraTokenClaims](#extratokenclaims) - Additional Access Token Claims
+- [fetch](#fetch) - Fetching External Resources
+- [fetchResponseBodyLimits](#fetchresponsebodylimits) - Fetch Response Body Size Limits
+- [issueRefreshToken](#issuerefreshtoken) - Refresh Token Issuance Policy
+- [loadExistingGrant](#loadexistinggrant) - Loading Existing Grants
+- [pairwiseIdentifier](#pairwiseidentifier) - Pairwise Subject Identifier Generation
+- [renderError](#rendererror) - Error Response Rendering
+- [responseTypes](#responsetypes) - Supported response_type Values
+- [revokeGrantPolicy](#revokegrantpolicy) - Grant Revocation Policy
+- [rotateRefreshToken](#rotaterefreshtoken) - Refresh Token Rotation Policy
+- [routes](#routes) - Endpoint URL Paths
+- [scopes](#scopes) - Supported OAuth 2.0 Scope Values
+- [sectorIdentifierUriValidate](#sectoridentifierurivalidate) - Sector Identifier URI Validation
+- [subjectTypes](#subjecttypes) - Subject Identifier Types
 
-<!-- DO NOT EDIT, COMMIT OR STAGE CHANGES BELOW THIS LINE -->
-<!-- START CONF OPTIONS -->
+
 ### adapter
 
-Specifies the storage adapter implementation for persisting authorization server state. The default implementation provides a basic in-memory adapter suitable for development and testing purposes only. When this process is restarted, all stored information will be lost. Production deployments MUST provide a custom adapter implementation that persists data to external storage (e.g., database, Redis, etc.).   
- The adapter constructor will be instantiated for each model type when first accessed.   
+Storage Adapter  
+
+Specifies the storage adapter implementation for persisting authorization server state. The default implementation provides a basic in-memory adapter suitable for development and testing purposes only. When this process is restarted, all stored information will be lost. Production deployments MUST provide a custom adapter implementation that persists data to external storage (e.g., database, Redis, etc.). 
+
+The adapter constructor will be instantiated for each model type when first accessed. 
+
   
 
 See:
@@ -529,11 +538,67 @@ See:
 
 ---
 
+### claims
+
+Available Claims  
+
+Describes the claims that this authorization server may be able to supply values for. 
+
+It is used to achieve two different things related to claims:
+- which additional claims are available to RPs (configure as `{ claimName: null }`)
+- which claims fall under what scope (configure `{ scopeName: ['claim', 'another-claim'] }`) 
+
+  
+
+See [Configuring OpenID Connect 1.0 Standard Claims](https://github.com/panva/node-oidc-provider/discussions/1299)
+
+_**default value**_:
+```js
+{
+  acr: null,
+  auth_time: null,
+  iss: null,
+  openid: [
+    'sub'
+  ],
+  sid: null
+}
+```
+
+---
+
+### clientBasedCORS
+
+Cross-Origin Resource Sharing (CORS)  
+
+Specifies a function that determines whether Cross-Origin Resource Sharing (CORS) requests shall be permitted based on the requesting client. This function is invoked for each actual CORS request to evaluate the client's authorization to access the authorization server from the specified origin. The function receives three arguments: `ctx` (the Koa request context), `origin` (the requesting origin string), and `client` (the resolved Client instance). It must return a boolean (or a Promise resolving to one). 
+
+  
+
+See [Configuring Client Metadata-based CORS Origin allow list](https://github.com/panva/node-oidc-provider/discussions/1298)
+
+_**default value**_:
+```js
+function clientBasedCORS(ctx, origin, client) {
+  if (ctx.oidc.route === 'userinfo' || client.clientAuthMethod === 'none') {
+    return client.redirectUris.some((uri) => URL.parse(uri)?.origin === origin);
+  }
+  return false;
+}
+```
+
+---
+
 ### clients
 
-An array of client metadata objects representing statically configured OAuth 2.0 and OpenID Connect clients. These clients are persistent, do not expire, and remain available throughout the authorization server's lifetime. For dynamic client discovery, the authorization server will invoke the adapter's `find` method when encountering unregistered client identifiers.   
- To restrict the authorization server to only statically configured clients and disable dynamic registration, configure the adapter to return falsy values for client lookup operations (e.g., `return Promise.resolve()`).   
- Each client's metadata shall be validated according to the specifications in which the respective properties are defined.   
+Statically Configured Clients  
+
+An array of client metadata objects representing statically configured OAuth 2.0 and OpenID Connect clients. These clients are persistent, do not expire, and remain available throughout the authorization server's lifetime. For dynamic client resolution, the authorization server will invoke the adapter's `find` method when encountering unregistered client identifiers. 
+
+To restrict the authorization server to only statically configured clients and disable dynamic registration, configure the adapter to return falsy values for client lookup operations (e.g., `return Promise.resolve()`). 
+
+Each client's metadata shall be validated according to the specifications in which the respective properties are defined. 
+
   
 
 
@@ -544,71 +609,23 @@ _**default value**_:
 <a id="clients-available-metadata"></a><details><summary>Example: (Click to expand) Available Metadata.</summary><br>
 
 
-application_type, client_id, client_name, client_secret, client_uri, contacts, default_acr_values, default_max_age, grant_types, id_token_signed_response_alg, initiate_login_uri, jwks, jwks_uri, logo_uri, policy_uri, post_logout_redirect_uris, redirect_uris, require_auth_time, response_types, response_modes, scope, sector_identifier_uri, subject_type, token_endpoint_auth_method, tos_uri, userinfo_signed_response_alg <br/><br/>The following metadata is available but may not be recognized depending on this authorization server's configuration.<br/><br/> authorization_encrypted_response_alg, authorization_encrypted_response_enc, authorization_signed_response_alg, backchannel_logout_session_required, backchannel_logout_uri, id_token_encrypted_response_alg, id_token_encrypted_response_enc, introspection_encrypted_response_alg, introspection_encrypted_response_enc, introspection_signed_response_alg, request_object_encryption_alg, request_object_encryption_enc, request_object_signing_alg, tls_client_auth_san_dns, tls_client_auth_san_email, tls_client_auth_san_ip, tls_client_auth_san_uri, tls_client_auth_subject_dn, tls_client_certificate_bound_access_tokens, use_mtls_endpoint_aliases, token_endpoint_auth_signing_alg, userinfo_encrypted_response_alg, userinfo_encrypted_response_enc  
+application_type, client_id, client_name, client_secret, client_uri, contacts, default_acr_values, default_max_age, grant_types, id_token_signed_response_alg, initiate_login_uri, jwks, jwks_uri, logo_uri, policy_uri, redirect_uris, require_auth_time, response_types, response_modes, scope, sector_identifier_uri, subject_type, token_endpoint_auth_method, tos_uri The following metadata is available but may not be recognized depending on this authorization server's configuration. Authorization_details_types, authorization_encrypted_response_alg, authorization_encrypted_response_enc, authorization_signed_response_alg, backchannel_authentication_request_signing_alg, backchannel_client_notification_endpoint, backchannel_logout_session_required, backchannel_logout_uri, backchannel_token_delivery_mode, backchannel_user_code_parameter, dpop_bound_access_tokens, id_token_encrypted_response_alg, id_token_encrypted_response_enc, introspection_encrypted_response_alg, introspection_encrypted_response_enc, introspection_signed_response_alg, post_logout_redirect_uris, request_object_encryption_alg, request_object_encryption_enc, request_object_signing_alg, require_pushed_authorization_requests, require_signed_request_object, tls_client_auth_san_dns, tls_client_auth_san_email, tls_client_auth_san_ip, tls_client_auth_san_uri, tls_client_auth_subject_dn, tls_client_certificate_bound_access_tokens, token_endpoint_auth_signing_alg, use_mtls_endpoint_aliases, userinfo_encrypted_response_alg, userinfo_encrypted_response_enc, userinfo_signed_response_alg  
 
 
 </details>
 
 ---
 
-### findAccount
-
-Specifies a function that shall be invoked to load an account and retrieve its available claims during authorization server operations. This function enables the authorization server to resolve end-user account information based on the provided account identifier. The function MUST return a Promise that resolves to an account object containing an `accountId` property and a `claims()` method that returns an object with claims corresponding to the claims supported by the issuer. The `claims()` method may also return a Promise that shall be resolved or rejected according to account availability and authorization server policy.  
-
-
-_**default value**_:
-```js
-async function findAccount(ctx, sub, token) {
-  // @param ctx - koa request context
-  // @param sub {string} - account identifier (subject)
-  // @param token - is a reference to the token used for which a given account is being loaded,
-  //   is undefined in scenarios where claims are returned from authorization endpoint
-  return {
-    accountId: sub,
-    // @param use {string} - can either be "id_token" or "userinfo", depending on
-    //   where the specific claims are intended to be put in
-    // @param scope {string} - the intended scope, while oidc-provider will mask
-    //   claims depending on the scope automatically you might want to skip
-    //   loading some claims from external resources or through db projection etc. based on this
-    //   detail or not return them in ID Tokens but only UserInfo and so on
-    // @param claims {object} - the part of the claims authorization parameter for either
-    //   "id_token" or "userinfo" (depends on the "use" param)
-    // @param rejected {Array[String]} - claim names that were rejected by the end-user, you might
-    //   want to skip loading some claims from external resources or through db projection
-    async claims(use, scope, claims, rejected) {
-      return { sub };
-    },
-  };
-}
-```
-
----
-
-### jwks
-
-Specifies the JSON Web Key Set that shall be used by the authorization server for cryptographic signing and decryption operations. The key set MUST be provided in [JWK Set format](https://www.rfc-editor.org/rfc/rfc7517.html#section-5) as defined in RFC 7517. All keys within the set MUST be private keys.   
- Supported key types include:   
- - RSA
- - OKP (Ed25519 and X25519 sub types)
- - EC (P-256, P-384, and P-521 curves)   
-  
-
-_**recommendation**_: Be sure to follow best practices for distributing private keying material and secrets for your respective target deployment environment.  
-
-_**recommendation**_: The following action order is recommended when rotating signing keys on a distributed deployment with rolling reloads in place.
- 1. push new keys at the very end of the "keys" array in your JWKS, this means the keys will become available for verification should they be encountered but not yet used for signing
- 2. reload all your processes
- 3. move your new key to the very front of the "keys" array in your JWKS, this means the key will be used for signing after reload
- 4. reload all your processes  
-
-
----
-
 ### features
 
-Specifies the authorization server feature capabilities that shall be enabled or disabled. This configuration controls the availability of optional OAuth 2.0 and OpenID Connect extensions, experimental specifications, and proprietary enhancements.   
- Certain features may be designated as experimental implementations. When experimental features are enabled, the authorization server will emit warnings to indicate that breaking changes may occur in future releases. These changes will be published as minor version updates of the oidc-provider module.   
- To suppress experimental feature warnings and ensure configuration validation against breaking changes, implementations shall acknowledge the specific experimental feature version using the acknowledgment mechanism demonstrated in the example below. When an unacknowledged breaking change is detected, the authorization server configuration will throw an error during instantiation.   
+Feature Configurations  
+
+Specifies the authorization server feature capabilities that shall be enabled or disabled. This configuration controls the availability of optional OAuth 2.0 and OpenID Connect extensions, experimental specifications, and proprietary enhancements. 
+
+Certain features may be designated as experimental implementations. When experimental features are enabled, the authorization server will emit warnings to indicate that breaking changes may occur in future releases. These changes will be published as minor version updates of the oidc-provider module. 
+
+To suppress experimental feature warnings and ensure configuration validation against breaking changes, implementations shall acknowledge the specific experimental feature version using the acknowledgment mechanism demonstrated in the example below. When an unacknowledged breaking change is detected, the authorization server configuration will throw an error during instantiation. 
+
   
 
 <a id="features-acknowledging-an-experimental-feature"></a><details><summary>Example: (Click to expand) Acknowledging an experimental feature.</summary><br>
@@ -637,7 +654,7 @@ new oidc.Provider('http://localhost:3000', {
 });
 // No more NOTICE, at this point if the experimental was updated and contained no breaking
 // changes, you're good to go, still no NOTICE, your code is safe to run.
-// Now lets assume you upgrade oidc-provider version and it includes a breaking change in
+// Now let's assume you upgrade oidc-provider version and it includes a breaking change in
 // this experimental feature
 new oidc.Provider('http://localhost:3000', {
   features: {
@@ -654,93 +671,190 @@ new oidc.Provider('http://localhost:3000', {
 
 ---
 
-### features.attestClientAuth
+### features.devInteractions
 
-[`draft-ietf-oauth-attestation-based-client-auth-06`](https://www.ietf.org/archive/id/draft-ietf-oauth-attestation-based-client-auth-06.html) - OAuth 2.0 Attestation-Based Client Authentication  
+Development-only Interaction Views  
 
-> [!NOTE]
-> This is an experimental feature.
+Enables development-only interaction views that provide pre-built user interface components for rapid prototyping and testing of authorization flows. These views accept any username (used as the subject claim value) and any password for authentication, bypassing production-grade security controls. 
 
-Specifies whether Attestation-Based Client Authentication capabilities shall be enabled. When enabled, the authorization server shall support the `attest_jwt_client_auth` authentication method within the server's `clientAuthMethods` configuration. This mechanism enables Client Instances to authenticate using a Client Attestation JWT issued by a trusted Client Attester and a corresponding Client Attestation Proof-of-Possession JWT generated by the Client Instance.   
-  
+Production deployments MUST disable this feature and implement proper end-user authentication and authorization mechanisms. These development views MUST NOT be used in production environments as they provide no security guarantees and accept arbitrary credentials.  
 
 
 _**default value**_:
 ```js
 {
-  ack: undefined,
-  assertAttestationJwtAndPop: [AsyncFunction: assertAttestationJwtAndPop], // see expanded details below
-  challengeSecret: undefined,
-  enabled: false,
-  getAttestationSignaturePublicKey: [AsyncFunction: getAttestationSignaturePublicKey] // see expanded details below
+  enabled: true
 }
 ```
 
-<details><summary>(Click to expand) features.attestClientAuth options details</summary><br>
+---
 
+### features.resourceIndicators
 
-#### assertAttestationJwtAndPop
+[RFC8707](https://www.rfc-editor.org/rfc/rfc8707.html) - Resource Indicators for OAuth 2.0  
 
-Specifies a helper function that shall be invoked to perform additional validation of the Client Attestation JWT and Client Attestation Proof-of-Possession JWT beyond the specification requirements. This enables enforcement of extension profiles, deployment-specific policies, or additional security constraints.   
- At the point of invocation, both JWTs have undergone signature verification and standard validity claim validation. The function may throw errors to reject non-compliant attestations or return successfully to indicate acceptance of the client authentication attempt.  
+Specifies whether Resource Indicator capabilities shall be enabled. When enabled, the authorization server shall support the `resource` parameter at the authorization and token endpoints to enable issuing Access Tokens for specific Resource Servers (APIs) with enhanced audience control and scope management. 
+
+The authorization server implements the following resource indicator processing rules:
+- Multiple resource parameters may be present during Authorization Code Flow, Device Authorization Grant, and Backchannel Authentication Requests, but only a single audience for an Access Token is permitted.
+- Authorization and Authentication Requests that result in an Access Token being issued by the Authorization Endpoint MUST only contain a single resource (or one MUST be resolved using the `defaultResource` helper).
+- Client Credentials grant MUST only contain a single resource parameter.
+- During Authorization Code / Refresh Token / Device Code / Backchannel Authentication Request exchanges, if the exchanged code/token does not include the `'openid'` scope and only has a single resource then the resource parameter may be omitted - an Access Token for the single resource is returned.
+- During Authorization Code / Refresh Token / Device Code / Backchannel Authentication Request exchanges, if the exchanged code/token does not include the `'openid'` scope and has multiple resources then the resource parameter MUST be provided (or one MUST be resolved using the `defaultResource` helper). An Access Token for the provided/resolved resource is returned.
+- (with userinfo endpoint enabled and useGrantedResource helper returning falsy) During Authorization Code / Refresh Token / Device Code exchanges, if the exchanged code/token includes the `'openid'` scope and no resource parameter is present - an Access Token for the UserInfo Endpoint is returned.
+- (with userinfo endpoint enabled and useGrantedResource helper returning truthy) During Authorization Code / Refresh Token / Device Code exchanges, even if the exchanged code/token includes the `'openid'` scope and only has a single resource then the resource parameter may be omitted - an Access Token for the single resource is returned.
+- (with userinfo endpoint disabled) During Authorization Code / Refresh Token / Device Code exchanges, if the exchanged code/token includes the `'openid'` scope and only has a single resource then the resource parameter may be omitted - an Access Token for the single resource is returned.
+- Issued Access Tokens shall always only contain scopes that are defined on the respective Resource Server (returned from `features.resourceIndicators.getResourceServerInfo`).  
 
 
 _**default value**_:
 ```js
-async function assertAttestationJwtAndPop(ctx, attestation, pop, client) {
+{
+  defaultResource: [AsyncFunction: defaultResource], // see expanded details below
+  enabled: true,
+  getResourceServerInfo: [AsyncFunction: getResourceServerInfo], // see expanded details below
+  useGrantedResource: [AsyncFunction: useGrantedResource] // see expanded details below
+}
+```
+
+<details><summary>(Click to expand) features.resourceIndicators options details</summary><br>
+
+
+#### defaultResource
+
+Specifies a helper function that shall be invoked to determine the default resource indicator for a request when none is provided by the client during the authorization request or when multiple resources are provided/resolved and only a single one is required during an Access Token Request. This function enables authorization server policy-based resource selection according to deployment requirements.  
+
+
+_**default value**_:
+```js
+async function defaultResource(ctx, client, oneOf) {
   // @param ctx - koa request context
-  // @param attestation - verified and parsed Attestation JWT
-  //        attestation.protectedHeader - parsed protected header object
-  //        attestation.payload - parsed protected header object
-  //        attestation.key - CryptoKey that verified the Attestation JWT signature
-  // @param pop - verified and parsed Attestation JWT PoP
-  //        pop.protectedHeader - parsed protected header object
-  //        pop.payload - parsed protected header object
-  //        pop.key - CryptoKey that verified the Attestation JWT PoP signature
   // @param client - client making the request
+  // @param oneOf {string[]} - The authorization server needs to select **one** of the values provided.
+  //                           Default is that the array is provided so that the request will fail.
+  //                           This argument is only provided when called during
+  //                           Authorization Code / Refresh Token / Device Code exchanges.
+  if (oneOf) return oneOf;
+  return undefined;
 }
 ```
 
-#### challengeSecret
+#### getResourceServerInfo
 
-Specifies the cryptographic secret value used for generating server-provided challenges. This value MUST be a 32-byte length Buffer instance to ensure sufficient entropy for secure challenge generation.  
+Specifies a helper function that shall be invoked to load information about a Resource Server (API) and determine whether the client is authorized to request scopes for that particular resource. This function enables resource-specific scope validation and Access Token configuration according to authorization server policy. 
 
+  
 
-_**default value**_:
-```js
-undefined
-```
+_**recommendation**_: Only allow client's pre-registered resource values. To pre-register these you shall use the `extraClientMetadata` configuration option to define a custom metadata and use that to implement your policy using this function. 
 
-#### getAttestationSignaturePublicKey
-
-Specifies a helper function that shall be invoked to verify the issuer identifier of a Client Attestation JWT and retrieve the public key used for signature verification. At the point of this function's invocation, only the JWT format has been validated; no cryptographic or claims verification has occurred.   
- The function MUST return a public key in one of the supported formats: CryptoKey, KeyObject, or JSON Web Key (JWK) representation. The authorization server shall use this key to verify the Client Attestation JWT signature.   
   
 
 
 _**default value**_:
 ```js
-async function getAttestationSignaturePublicKey(ctx, iss, header, client) {
+async function getResourceServerInfo(ctx, resourceIndicator, client) {
   // @param ctx - koa request context
-  // @param iss - Issuer Identifier from the Client Attestation JWT
-  // @param header - Protected Header of the Client Attestation JWT
+  // @param resourceIndicator - resource indicator value either requested or resolved by the defaultResource helper.
   // @param client - client making the request
-  throw new Error('features.attestClientAuth.getAttestationSignaturePublicKey not implemented');
+  throw new errors.InvalidTarget();
 }
 ```
-<a id="get-attestation-signature-public-key-fetching-attester-public-keys-from-the-attester's-hosted-jwks"></a><details><summary>Example: (Click to expand) Fetching attester public keys from the attester's hosted JWKS</summary><br>
+<a id="get-resource-server-info-resource-server-definition"></a><details><summary>Example: (Click to expand) Resource Server Definition.</summary><br>
 
 ```js
-import * as jose from 'jose';
-const attesters = new Map(Object.entries({
-  'https://attester.example.com': jose.createRemoteJWKSet(new URL('https://attester.example.com/jwks')),
-}));
-function getAttestationSignaturePublicKey(ctx, iss, header, client) {
-  if (attesters.has(iss)) return attesters.get(iss)(header);
-  throw new Error('unsupported oauth-client-attestation issuer');
+{
+  // REQUIRED
+  // available scope values (space-delimited string)
+  scope: string,
+  // OPTIONAL
+  // "aud" (Audience) value to use
+  // Default is the resource indicator value will be used as token audience
+  audience?: string,
+  // OPTIONAL
+  // Issued Token TTL
+  // Default is - see `ttl` configuration
+  accessTokenTTL?: number,
+  // Issued Token Format
+  // Default is - opaque
+  accessTokenFormat?: 'opaque' | 'jwt',
+  // JWT Access Token Format (when accessTokenFormat is 'jwt')
+  // Default is `{ sign: { alg: 'RS256' }, encrypt: false }`
+  // Tokens may be signed, signed and then encrypted, or just encrypted JWTs.
+  jwt?: {
+    // Tokens will be signed
+    sign?:
+     | {
+         alg?: string, // 'PS256' | 'PS384' | 'PS512' | 'ES256' | 'ES384' | 'ES512' | 'Ed25519' | 'RS256' | 'RS384' | 'RS512' | 'EdDSA' | 'ML-DSA-44' | 'ML-DSA-65' | 'ML-DSA-87'
+         kid?: string, // OPTIONAL `kid` to aid in signing key selection
+       }
+     | {
+         alg: string, // 'HS256' | 'HS384' | 'HS512'
+         key: CryptoKey | KeyObject | Buffer, // shared symmetric secret to sign the JWT token with
+         kid?: string, // OPTIONAL `kid` JOSE Header Parameter to put in the token's JWS Header
+       },
+    // Tokens will be encrypted
+    encrypt?: {
+      alg: string, // 'dir' | 'RSA-OAEP' | 'RSA-OAEP-256' | 'RSA-OAEP-384' | 'RSA-OAEP-512' | 'ECDH-ES' | 'ECDH-ES+A128KW' | 'ECDH-ES+A192KW' | 'ECDH-ES+A256KW' | 'A128KW' | 'A192KW' | 'A256KW' | 'A128GCMKW' | 'A192GCMKW' | 'A256GCMKW'
+      enc: string, // 'A128CBC-HS256' | 'A128GCM' | 'A192CBC-HS384' | 'A192GCM' | 'A256CBC-HS512' | 'A256GCM'
+      key: CryptoKey | KeyObject | Buffer, // public key or shared symmetric secret to encrypt the JWT token with
+      kid?: string, // OPTIONAL `kid` JOSE Header Parameter to put in the token's JWE Header
+    }
+  }
 }
 ```
 </details>
+<a id="get-resource-server-info-resource-server-api-with-two-scopes-an-expected-audience-value-an-access-token-ttl-and-a-jwt-access-token-format"></a><details><summary>Example: (Click to expand) Resource Server (API) with two scopes, an expected audience value, an Access Token TTL and a JWT Access Token Format.</summary><br>
+
+```js
+{
+  scope: 'api:read api:write',
+  audience: 'resource-server-audience-value',
+  accessTokenTTL: 2 * 60 * 60, // 2 hours
+  accessTokenFormat: 'jwt',
+  jwt: {
+    sign: { alg: 'ES256' },
+  },
+}
+```
+</details>
+<a id="get-resource-server-info-resource-server-api-with-two-scopes-and-a-symmetrically-encrypted-jwt-access-token-format"></a><details><summary>Example: (Click to expand) Resource Server (API) with two scopes and a symmetrically encrypted JWT Access Token Format.</summary><br>
+
+```js
+{
+  scope: 'api:read api:write',
+  accessTokenFormat: 'jwt',
+  jwt: {
+    sign: false,
+    encrypt: {
+      alg: 'dir',
+      enc: 'A128CBC-HS256',
+      key: Buffer.from('f40dd9591646bebcb9c32aed02f5e610c2d15e1d38cde0c1fe14a55cf6bfe2d9', 'hex')
+    },
+  }
+}
+```
+</details>
+
+#### useGrantedResource
+
+Specifies a helper function that shall be invoked to determine whether an already granted resource indicator should be used without being explicitly requested by the client during the Token Endpoint request. This function enables flexible resource selection policies for token issuance operations. 
+
+  
+
+_**recommendation**_: Use `return true` when it's allowed for a client to skip providing the "resource" parameter at the Token Endpoint.  
+
+_**recommendation**_: Use `return false` (default) when it's required for a client to explicitly provide a "resource" parameter at the Token Endpoint or when other indication dictates an Access Token for the UserInfo Endpoint should be returned.  
+
+
+_**default value**_:
+```js
+async function useGrantedResource(ctx, model) {
+  // @param ctx - koa request context
+  // @param model - depending on the request's grant_type this can be either an AuthorizationCode, BackchannelAuthenticationRequest,
+  //                RefreshToken, or DeviceCode model instance.
+  return false;
+}
+```
 
 </details>
 
@@ -748,9 +862,9 @@ function getAttestationSignaturePublicKey(ctx, iss, header, client) {
 
 ### features.backchannelLogout
 
-[`OIDC Back-Channel Logout 1.0`](https://openid.net/specs/openid-connect-backchannel-1_0-final.html)  
+[OIDC Back-Channel Logout 1.0](https://openid.net/specs/openid-connect-backchannel-1_0-final.html)  
 
-Specifies whether Back-Channel Logout capabilities shall be enabled. When enabled, the authorization server shall support propagating end-user logouts initiated by relying parties to clients that were involved throughout the lifetime of the terminated session.  
+Specifies whether Back-Channel Logout capabilities shall be enabled. When enabled, the authorization server shall support propagating end-user logout events to clients that were involved throughout the lifetime of the terminated session.  
 
 
 _**default value**_:
@@ -764,9 +878,10 @@ _**default value**_:
 
 ### features.ciba
 
-[OIDC Client Initiated Backchannel Authentication Flow (`CIBA`)](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0-final.html)  
+[OIDC Client Initiated Backchannel Authentication Flow (CIBA)](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0-final.html)  
 
-Enables Core `CIBA` Flow, when combined with `features.fapi` and `features.requestObjects.enabled` enables [Financial-grade API: Client Initiated Backchannel Authentication Profile - Implementers Draft 01](https://openid.net/specs/openid-financial-api-ciba-ID1.html) as well.   
+Specifies whether Core `CIBA` Flow shall be enabled. When combined with `features.fapi` and `features.requestObjects` this also enables [Financial-grade API: Client Initiated Backchannel Authentication Profile - Implementers Draft 01](https://openid.net/specs/openid-financial-api-ciba-ID1.html) as well. 
+
   
 
 
@@ -792,8 +907,9 @@ _**default value**_:
 #### deliveryModes
 
 Specifies the token delivery modes supported by this authorization server. The following delivery modes are defined:
- - `poll` - Client polls the token endpoint for completion
- - `ping` - Authorization server notifies client of completion via HTTP callback   
+- `poll` - Client polls the token endpoint for completion
+- `ping` - Authorization server notifies client of completion via HTTP callback 
+
   
 
 
@@ -806,12 +922,15 @@ _**default value**_:
 
 #### processLoginHint
 
-Specifies a helper function that shall be invoked to process the `login_hint` parameter and extract the corresponding accountId value for request processing. This function MUST validate the hint format and content according to authorization server policy.   
+Specifies a helper function that shall be invoked to process the `login_hint` parameter and extract the corresponding accountId value for request processing. This function MUST validate the hint format and content according to authorization server policy. 
+
   
 
 _**recommendation**_: Use `throw new errors.InvalidRequest('validation error message')` when the login_hint format or content is invalid.  
 
-_**recommendation**_: Use `return undefined` when the accountId cannot be determined from the provided login_hint.  
+_**recommendation**_: Use `return undefined` when the accountId cannot be determined from the provided login_hint. 
+
+  
 
 
 _**default value**_:
@@ -825,14 +944,17 @@ async function processLoginHint(ctx, loginHint) {
 
 #### processLoginHintToken
 
-Specifies a helper function that shall be invoked to process the `login_hint_token` parameter and extract the corresponding accountId value for request processing. This function MUST validate token expiration and format according to authorization server policy.   
+Specifies a helper function that shall be invoked to process the `login_hint_token` parameter and extract the corresponding accountId value for request processing. This function MUST validate token expiration and format according to authorization server policy. 
+
   
 
 _**recommendation**_: Use `throw new errors.ExpiredLoginHintToken('validation error message')` when the login_hint_token has expired.  
 
 _**recommendation**_: Use `throw new errors.InvalidRequest('validation error message')` when the login_hint_token format or content is invalid.  
 
-_**recommendation**_: Use `return undefined` when the accountId cannot be determined from the provided login_hint_token.  
+_**recommendation**_: Use `return undefined` when the accountId cannot be determined from the provided login_hint_token. 
+
+  
 
 
 _**default value**_:
@@ -846,8 +968,10 @@ async function processLoginHintToken(ctx, loginHintToken) {
 
 #### triggerAuthenticationDevice
 
-Specifies a helper function that shall be invoked to initiate authentication and authorization processes on the end-user's Authentication Device as defined in the CIBA specification. This function is executed after accepting the backchannel authentication request but before transmitting the response to the requesting client.   
- Upon successful end-user authentication, implementations shall use `provider.backchannelResult()` to complete the Consumption Device login process.   
+Specifies a helper function that shall be invoked to initiate authentication and authorization processes on the end-user's Authentication Device as defined in the CIBA specification. This function is executed after accepting the backchannel authentication request but before transmitting the response to the requesting client. 
+
+Upon successful end-user authentication, implementations shall use `provider.backchannelResult()` to complete the Consumption Device login process. 
+
   
 
 
@@ -873,23 +997,26 @@ const provider = new oidc.Provider(...);
 await provider.backchannelResult(...);
 ```
 `backchannelResult(request, result[, options]);`
- - `request` BackchannelAuthenticationRequest - BackchannelAuthenticationRequest instance.
- - `result` Grant | OIDCProviderError - instance of a persisted Grant model or an OIDCProviderError (all exported by errors).
- - `options.acr?`: string - Authentication Context Class Reference value that identifies the Authentication Context Class that the authentication performed satisfied.
- - `options.amr?`: string[] - Identifiers for authentication methods used in the authentication.
- - `options.authTime?`: number - Time when the end-user authentication occurred.  
+- `request` BackchannelAuthenticationRequest - BackchannelAuthenticationRequest instance.
+- `result` Grant | OIDCProviderError - instance of a persisted Grant model or an OIDCProviderError (all exported by errors).
+- `options.acr?`: string - Authentication Context Class Reference value that identifies the Authentication Context Class that the authentication performed satisfied.
+- `options.amr?`: string[] - Identifiers for authentication methods used in the authentication.
+- `options.authTime?`: number - Time when the end-user authentication occurred.  
 
 
 </details>
 
 #### validateBindingMessage
 
-Specifies a helper function that shall be invoked to validate the `binding_message` parameter according to authorization server policy. This function MUST reject invalid binding messages by throwing appropriate error instances.   
+Specifies a helper function that shall be invoked to validate the `binding_message` parameter according to authorization server policy. This function MUST reject invalid binding messages by throwing appropriate error instances. 
+
   
 
 _**recommendation**_: Use `throw new errors.InvalidBindingMessage('validation error message')` when the binding_message violates authorization server policy.  
 
-_**recommendation**_: Use `return undefined` when a binding_message is not required by policy and was not provided in the request.  
+_**recommendation**_: Use `return undefined` when a binding_message is not required by policy and was not provided in the request. 
+
+  
 
 
 _**default value**_:
@@ -907,12 +1034,15 @@ async function validateBindingMessage(ctx, bindingMessage) {
 
 #### validateRequestContext
 
-Specifies a helper function that shall be invoked to validate the `request_context` parameter according to authorization server policy. This function MUST enforce policy requirements for request context validation and reject non-compliant requests.   
+Specifies a helper function that shall be invoked to validate the `request_context` parameter according to authorization server policy. This function MUST enforce policy requirements for request context validation and reject non-compliant requests. 
+
   
 
 _**recommendation**_: Use `throw new errors.InvalidRequest('validation error message')` when the request_context is required by policy but missing or invalid.  
 
-_**recommendation**_: Use `return undefined` when a request_context is not required by policy and was not provided in the request.  
+_**recommendation**_: Use `return undefined` when a request_context is not required by policy and was not provided in the request. 
+
+  
 
 
 _**default value**_:
@@ -926,14 +1056,17 @@ async function validateRequestContext(ctx, requestContext) {
 
 #### verifyUserCode
 
-Specifies a helper function that shall be invoked to verify the presence and validity of the `user_code` parameter when required by authorization server policy.   
+Specifies a helper function that shall be invoked to verify the presence and validity of the `user_code` parameter when required by authorization server policy. 
+
   
 
 _**recommendation**_: Use `throw new errors.MissingUserCode('validation error message')` when user_code is required by policy but was not provided.  
 
 _**recommendation**_: Use `throw new errors.InvalidUserCode('validation error message')` when the provided user_code value is invalid or does not meet policy requirements.  
 
-_**recommendation**_: Use `return undefined` when no user_code was provided and it is not required by authorization server policy.  
+_**recommendation**_: Use `return undefined` when no user_code was provided and it is not required by authorization server policy. 
+
+  
 
 
 _**default value**_:
@@ -952,9 +1085,10 @@ async function verifyUserCode(ctx, account, userCode) {
 
 ### features.claimsParameter
 
-[`OIDC Core 1.0`](https://openid.net/specs/openid-connect-core-1_0-errata2.html#ClaimsParameter) - Requesting Claims using the "claims" Request Parameter  
+[OIDC Core 1.0](https://openid.net/specs/openid-connect-core-1_0-errata2.html#ClaimsParameter) - Requesting Claims using the "claims" Request Parameter  
 
-Specifies whether the `claims` request parameter shall be enabled for authorization requests. When enabled, the authorization server shall accept and process the `claims` parameter to enable fine-grained control over which claims are returned in ID Tokens and from the UserInfo Endpoint.   
+Specifies whether the `claims` request parameter shall be enabled for authorization requests. When enabled, the authorization server shall accept and process the `claims` parameter to enable fine-grained control over which claims are returned in ID Tokens and from the UserInfo Endpoint. 
+
   
 
 
@@ -971,8 +1105,9 @@ _**default value**_:
 
 #### assertClaimsParameter
 
-Specifies a helper function that shall be invoked to perform additional validation of the `claims` parameter. This function enables enforcement of deployment-specific policies, security constraints, or extended claim validation logic according to authorization server requirements.   
- The function may throw errors to reject non-compliant claims requests or return successfully to indicate acceptance of the claims parameter content.  
+Specifies a helper function that shall be invoked to perform additional validation of the `claims` parameter. This function enables enforcement of deployment-specific policies, security constraints, or extended claim validation logic according to authorization server requirements. 
+
+The function may throw errors to reject non-compliant claims requests or return successfully to indicate acceptance of the claims parameter content.  
 
 
 _**default value**_:
@@ -990,7 +1125,7 @@ async function assertClaimsParameter(ctx, claims, client) {
 
 ### features.clientCredentials
 
-[`RFC6749`](https://www.rfc-editor.org/rfc/rfc6749.html#section-1.3.4) - Client Credentials  
+[RFC6749](https://www.rfc-editor.org/rfc/rfc6749.html#section-1.3.4) - Client Credentials  
 
 Specifies whether the Client Credentials grant type shall be enabled. When enabled, the authorization server shall accept `grant_type=client_credentials` requests at the token endpoint, allowing clients to obtain access tokens.  
 
@@ -1004,80 +1139,9 @@ _**default value**_:
 
 ---
 
-### features.dPoP
-
-[`RFC9449`](https://www.rfc-editor.org/rfc/rfc9449.html) - OAuth 2.0 Demonstration of Proof-of-Possession at the Application Layer (`DPoP`)  
-
-Enables sender-constraining of OAuth 2.0 tokens through application-level proof-of-possession mechanisms.  
-
-
-_**default value**_:
-```js
-{
-  allowReplay: false,
-  enabled: true,
-  nonceSecret: undefined,
-  requireNonce: [Function: requireNonce] // see expanded details below
-}
-```
-
-<details><summary>(Click to expand) features.dPoP options details</summary><br>
-
-
-#### allowReplay
-
-Specifies whether DPoP Proof replay shall be permitted by the authorization server. When set to false, the server enforces strict replay protection by rejecting previously used DPoP proofs, enhancing security against replay attacks.  
-
-
-_**default value**_:
-```js
-false
-```
-
-#### nonceSecret
-
-Specifies the cryptographic secret value used for generating server-provided DPoP nonces. When provided, this value MUST be a 32-byte length Buffer instance to ensure sufficient entropy for secure nonce generation.  
-
-
-_**default value**_:
-```js
-undefined
-```
-
-#### requireNonce
-
-Specifies a function that determines whether a DPoP nonce shall be required for proof-of-possession validation in the current request context. This function is invoked during DPoP proof validation to enforce nonce requirements based on authorization server policy.  
-
-
-_**default value**_:
-```js
-function requireNonce(ctx) {
-  return false;
-}
-```
-
-</details>
-
----
-
-### features.devInteractions
-
-Enables development-only interaction views that provide pre-built user interface components for rapid prototyping and testing of authorization flows. These views accept any username (used as the subject claim value) and any password for authentication, bypassing production-grade security controls.   
- Production deployments MUST disable this feature and implement proper end-user authentication and authorization mechanisms. These development views MUST NOT be used in production environments as they provide no security guarantees and accept arbitrary credentials.  
-
-
-_**default value**_:
-```js
-{
-  enabled: true
-}
-```
-
----
-
 ### features.deviceFlow
 
-[`RFC8628`](https://www.rfc-editor.org/rfc/rfc8628.html) - OAuth 2.0 Device Authorization Grant (`Device Flow`)  
+[RFC8628](https://www.rfc-editor.org/rfc/rfc8628.html) - OAuth 2.0 Device Authorization Grant (Device Flow)  
 
 Specifies whether the OAuth 2.0 Device Authorization Grant shall be enabled. When enabled, the authorization server shall support the device authorization flow, enabling OAuth clients on input-constrained devices to obtain user authorization by directing the user to perform the authorization flow on a secondary device with richer input and display capabilities.  
 
@@ -1101,8 +1165,8 @@ _**default value**_:
 #### charset
 
 Specifies the character set used for generating user codes in the device authorization flow. This configuration determines the alphabet from which user codes are constructed. Supported values include:
- - `base-20` - Uses characters BCDFGHJKLMNPQRSTVWXZ (excludes easily confused characters)
- - `digits` - Uses characters 0123456789 (numeric only)  
+- `base-20` - Uses characters BCDFGHJKLMNPQRSTVWXZ (excludes easily confused characters)
+- `digits` - Uses characters 0123456789 (numeric only)  
 
 
 _**default value**_:
@@ -1248,7 +1312,65 @@ async function userCodeInputSource(ctx, form, out, err) {
 
 ---
 
+### features.dPoP
+
+[RFC9449](https://www.rfc-editor.org/rfc/rfc9449.html) - OAuth 2.0 Demonstration of Proof-of-Possession at the Application Layer (DPoP)  
+
+Specifies whether sender-constraining of OAuth 2.0 tokens through application-level proof-of-possession mechanisms shall be enabled.  
+
+
+_**default value**_:
+```js
+{
+  allowReplay: false,
+  enabled: true,
+  nonceSecret: undefined,
+  requireNonce: [Function: requireNonce] // see expanded details below
+}
+```
+
+<details><summary>(Click to expand) features.dPoP options details</summary><br>
+
+
+#### allowReplay
+
+Specifies whether DPoP Proof replay shall be permitted by the authorization server. When set to false, the server enforces strict replay protection by rejecting previously used DPoP proofs, enhancing security against replay attacks.  
+
+
+_**default value**_:
+```js
+false
+```
+
+#### nonceSecret
+
+Specifies the cryptographic secret value used for generating server-provided DPoP nonces. When provided, this value MUST be a 32-byte Buffer instance to ensure sufficient entropy for secure nonce generation.  
+
+
+_**default value**_:
+```js
+undefined
+```
+
+#### requireNonce
+
+Specifies a function that determines whether a DPoP nonce shall be required for proof-of-possession validation in the current request context. This function is invoked during DPoP proof validation to enforce nonce requirements based on authorization server policy.  
+
+
+_**default value**_:
+```js
+function requireNonce(ctx) {
+  return false;
+}
+```
+
+</details>
+
+---
+
 ### features.encryption
+
+JWE Encryption  
 
 Specifies whether encryption capabilities shall be enabled. When enabled, the authorization server shall support accepting and issuing encrypted tokens involved in its other enabled capabilities.  
 
@@ -1262,31 +1384,9 @@ _**default value**_:
 
 ---
 
-### features.externalSigningSupport
-
-External Signing Support  
-
-> [!NOTE]
-> This is an experimental feature.
-
-Specifies whether external signing capabilities shall be enabled. When enabled, the authorization server shall support the use of `ExternalSigningKey` class instances in place of private JWK entries within the `jwks.keys` configuration array. This feature enables Digital Signature Algorithm operations (such as PS256, ES256, or other supported algorithms) to be performed by external cryptographic services, including Key Management Services (KMS) and Hardware Security Modules (HSM), providing enhanced security for private key material through externalized signing operations.   
-  
-
-See [KMS integration with AWS Key Management Service](https://github.com/panva/node-oidc-provider/discussions/1316)
-
-_**default value**_:
-```js
-{
-  ack: undefined,
-  enabled: false
-}
-```
-
----
-
 ### features.fapi
 
-FAPI Security Profiles (`FAPI`)  
+FAPI Security Profiles  
 
 Specifies whether FAPI Security Profile capabilities shall be enabled. When enabled, the authorization server shall implement additional security behaviors defined in FAPI specifications that cannot be achieved through other configuration options.  
 
@@ -1304,10 +1404,11 @@ _**default value**_:
 
 #### profile
 
-Specifies the FAPI profile version that shall be applied for security policy enforcement. The authorization server shall implement the behaviors defined in the selected profile specification. Supported values include:   
- - '2.0' - The authorization server shall implement behaviors from [FAPI 2.0 Security Profile](https://openid.net/specs/fapi-security-profile-2_0-final.html)
- - '1.0 Final' - The authorization server shall implement behaviors from [FAPI 1.0 Security Profile - Part 2: Advanced](https://openid.net/specs/openid-financial-api-part-2-1_0-final.html)
- - Function - A function that shall be invoked with arguments `(ctx, client)` to determine the profile contextually. The function shall return one of the supported profile values or undefined when FAPI behaviors should be ignored for the current request context.  
+Specifies the FAPI profile version that shall be applied for security policy enforcement. The authorization server shall implement the behaviors defined in the selected profile specification. Supported values include: 
+
+- '2.0' - The authorization server shall implement behaviors from [FAPI 2.0 Security Profile](https://openid.net/specs/fapi-security-profile-2_0-final.html)
+- '1.0 Final' - The authorization server shall implement behaviors from [FAPI 1.0 Security Profile - Part 2: Advanced](https://openid.net/specs/openid-financial-api-part-2-1_0-final.html)
+- Function - A function that shall be invoked with arguments `(ctx, client)` to determine the profile contextually. The function shall return one of the supported profile values or undefined when FAPI behaviors should be ignored for the current request context.  
 
 
 _**default value**_:
@@ -1321,11 +1422,12 @@ undefined
 
 ### features.introspection
 
-[`RFC7662`](https://www.rfc-editor.org/rfc/rfc7662.html) - OAuth 2.0 Token Introspection  
+[RFC7662](https://www.rfc-editor.org/rfc/rfc7662.html) - OAuth 2.0 Token Introspection  
 
 Specifies whether OAuth 2.0 Token Introspection capabilities shall be enabled. When enabled, the authorization server shall expose a token introspection endpoint that allows authorized clients and resource servers to query the metadata and status of the following token types:
- - Opaque access tokens
- - Refresh tokens   
+- Opaque access tokens
+- Refresh tokens 
+
   
 
 
@@ -1367,7 +1469,7 @@ async function introspectionAllowedPolicy(ctx, client, token) {
 
 ### features.jwtIntrospection
 
-[`RFC9701`](https://www.rfc-editor.org/rfc/rfc9701.html) - JWT Response for OAuth Token Introspection  
+[RFC9701](https://www.rfc-editor.org/rfc/rfc9701.html) - JWT Response for OAuth Token Introspection  
 
 Specifies whether JWT-formatted token introspection responses shall be enabled. When enabled, the authorization server shall support issuing introspection responses as JSON Web Tokens, providing enhanced security and integrity protection for token metadata transmission between authorized parties.  
 
@@ -1383,7 +1485,7 @@ _**default value**_:
 
 ### features.jwtResponseModes
 
-[JWT Secured Authorization Response Mode (`JARM`)](https://openid.net/specs/oauth-v2-jarm-errata1.html)  
+[JWT Secured Authorization Response Mode (JARM)](https://openid.net/specs/oauth-v2-jarm-errata1.html)  
 
 Specifies whether JWT Secured Authorization Response Mode capabilities shall be enabled. When enabled, the authorization server shall support encoding authorization responses as JSON Web Tokens, providing cryptographic protection and integrity assurance for authorization response parameters.  
 
@@ -1399,7 +1501,7 @@ _**default value**_:
 
 ### features.jwtUserinfo
 
-[`OIDC Core 1.0`](https://openid.net/specs/openid-connect-core-1_0-errata2.html#UserInfo) - JWT UserInfo Endpoint Responses  
+[OIDC Core 1.0](https://openid.net/specs/openid-connect-core-1_0-errata2.html#UserInfo) - JWT UserInfo Endpoint Responses  
 
 Specifies whether JWT-formatted UserInfo endpoint responses shall be enabled. When enabled, the authorization server shall support returning UserInfo responses as signed and/or encrypted JSON Web Tokens, providing enhanced security and integrity protection for end-user claims transmission. This feature shall also enable the relevant client metadata parameters for configuring JWT signing and/or encryption algorithms according to client requirements.  
 
@@ -1415,9 +1517,10 @@ _**default value**_:
 
 ### features.mTLS
 
-[`RFC8705`](https://www.rfc-editor.org/rfc/rfc8705.html) - OAuth 2.0 Mutual TLS Client Authentication and Certificate Bound Access Tokens (`MTLS`)  
+[RFC8705](https://www.rfc-editor.org/rfc/rfc8705.html) - OAuth 2.0 Mutual TLS Client Authentication and Certificate Bound Access Tokens (MTLS)  
 
-Specifies whether Mutual TLS capabilities shall be enabled. The authorization server supports three distinct features that require separate configuration settings within this feature's configuration object. Implementations MUST provide deployment-specific helper functions for certificate validation and processing operations.   
+Specifies whether Mutual TLS capabilities shall be enabled. The authorization server supports three distinct capabilities that require separate configuration settings within this feature's configuration object. Implementations MUST provide deployment-specific helper functions for certificate validation and processing operations. 
+
   
 
 
@@ -1509,7 +1612,7 @@ false
 
 ### features.pushedAuthorizationRequests
 
-[`RFC9126`](https://www.rfc-editor.org/rfc/rfc9126.html) - OAuth 2.0 Pushed Authorization Requests (`PAR`)  
+[RFC9126](https://www.rfc-editor.org/rfc/rfc9126.html) - OAuth 2.0 Pushed Authorization Requests (PAR)  
 
 Specifies whether Pushed Authorization Request capabilities shall be enabled. When enabled, the authorization server shall expose a pushed authorization request endpoint that allows clients to lodge authorization request parameters at the authorization server prior to redirecting end-users to the authorization endpoint, enhancing security by removing the need to transmit parameters via query string parameters.  
 
@@ -1552,7 +1655,7 @@ false
 
 ### features.registration
 
-[`OIDC Dynamic Client Registration 1.0`](https://openid.net/specs/openid-connect-registration-1_0-errata2.html) and [`RFC7591`](https://www.rfc-editor.org/rfc/rfc7591.html) - OAuth 2.0 Dynamic Client Registration Protocol  
+[OIDC Dynamic Client Registration 1.0](https://openid.net/specs/openid-connect-registration-1_0-errata2.html) and [RFC7591](https://www.rfc-editor.org/rfc/rfc7591.html) - OAuth 2.0 Dynamic Client Registration Protocol  
 
 Specifies whether Dynamic Client Registration capabilities shall be enabled. When enabled, the authorization server shall expose a client registration endpoint that allows clients to dynamically register themselves with the authorization server at runtime, enabling automated client onboarding and configuration management.  
 
@@ -1587,8 +1690,9 @@ function idFactory(ctx) {
 #### initialAccessToken
 
 Specifies whether the registration endpoint shall require an initial access token as authorization for client registration requests. This configuration controls access to the dynamic registration functionality. Supported values include:
- - `string` - The authorization server shall validate the provided bearer token against this static initial access token value
- - `boolean` - When true, the authorization server shall require adapter-backed initial access tokens; when false, registration requests are processed without initial access tokens.   
+- `string` - The authorization server shall validate the provided bearer token against this static initial access token value
+- `boolean` - When true, the authorization server shall require adapter-backed initial access tokens; when false, registration requests are processed without initial access tokens. 
+
   
 
 
@@ -1596,7 +1700,7 @@ _**default value**_:
 ```js
 false
 ```
-<a id="initial-access-token-to-add-an-adapter-backed-initial-access-token-and-retrive-its-value"></a><details><summary>Example: (Click to expand) To add an adapter backed initial access token and retrive its value.</summary><br>
+<a id="initial-access-token-to-add-an-adapter-backed-initial-access-token-and-retrieve-its-value"></a><details><summary>Example: (Click to expand) To add an adapter backed initial access token and retrieve its value.</summary><br>
 
 ```js
 new (provider.InitialAccessToken)({}).save().then(console.log);
@@ -1606,9 +1710,10 @@ new (provider.InitialAccessToken)({}).save().then(console.log);
 #### issueRegistrationAccessToken
 
 Specifies whether a registration access token shall be issued upon successful client registration. This configuration determines if clients receive tokens for subsequent registration management operations. Supported values include:
- - `true` - Registration access tokens shall be issued for all successful registrations
- - `false` - Registration access tokens shall not be issued
- - Function - A function that shall be invoked to dynamically determine token issuance based on request context and authorization server policy   
+- `true` - Registration access tokens shall be issued for all successful registrations
+- `false` - Registration access tokens shall not be issued
+- Function - A function that shall be invoked to dynamically determine token issuance based on request context and authorization server policy 
+
   
 
 
@@ -1628,16 +1733,19 @@ async issueRegistrationAccessToken(ctx) {
 
 #### policies
 
-Specifies registration and registration management policies that shall be applied to client metadata properties during dynamic registration operations. Policies are synchronous or asynchronous functions assigned to Initial Access Tokens that execute before standard client property validations. Multiple policies may be assigned to an Initial Access Token, and by default, the same policies shall transfer to the Registration Access Token. Policy functions may throw errors to reject registration requests or modify the client properties object before validation.   
+Specifies registration and registration management policies that shall be applied to client metadata properties during dynamic registration operations. Policies are synchronous or asynchronous functions assigned to Initial Access Tokens that execute before standard client property validations. Multiple policies may be assigned to an Initial Access Token, and by default, the same policies shall transfer to the Registration Access Token. Policy functions may throw errors to reject registration requests or modify the client properties object before validation. 
+
   
 
-_**recommendation**_: Referenced policies MUST always be present when encountered on a token; an AssertionError will be thrown inside the request context if a policy is not found, resulting in a 500 Server Error.  
+_**recommendation**_: Referenced policies MUST always be present when encountered on a token; an AssertionError will be thrown inside the request context if a policy is not found, resulting in a 500 Server Error. 
+
+  
 
 _**recommendation**_: The same policies will be assigned to the Registration Access Token after a successful validation. If you wish to assign different policies to the Registration Access Token:
- ```js
- // inside your final ran policy
- ctx.oidc.entities.RegistrationAccessToken.policies = ['update-policy'];
- ```  
+```js
+// inside your final ran policy
+ctx.oidc.entities.RegistrationAccessToken.policies = ['update-policy'];
+```  
 
 
 _**default value**_:
@@ -1699,7 +1807,7 @@ async function secretFactory(ctx) {
 
 ### features.registrationManagement
 
-[`RFC7592`](https://www.rfc-editor.org/rfc/rfc7592.html) - OAuth 2.0 Dynamic Client Registration Management Protocol  
+[RFC7592](https://www.rfc-editor.org/rfc/rfc7592.html) - OAuth 2.0 Dynamic Client Registration Management Protocol  
 
 Specifies whether Dynamic Client Registration Management capabilities shall be enabled. When enabled, the authorization server shall expose Update and Delete operations as defined in RFC 7592, allowing clients to modify or remove their registration entries using Registration Access Tokens for client lifecycle management operations.  
 
@@ -1717,11 +1825,13 @@ _**default value**_:
 
 #### rotateRegistrationAccessToken
 
-Specifies whether registration access token rotation shall be enabled as a security policy for client registration management operations. When token rotation is active, the authorization server shall discard the current Registration Access Token upon successful update operations and issue a new token, returning it to the client with the Registration Update Response.   
- Supported values include:
- - `false` - Registration access tokens shall not be rotated and remain valid after use
- - `true` - Registration access tokens shall be rotated when used for management operations
- - Function - A function that shall be invoked to dynamically determine whether rotation should occur based on request context and authorization server policy   
+Specifies whether registration access token rotation shall be enabled as a security policy for client registration management operations. When token rotation is active, the authorization server shall discard the current Registration Access Token upon successful update operations and issue a new token, returning it to the client with the Registration Update Response. 
+
+Supported values include:
+- `false` - Registration access tokens shall not be rotated and remain valid after use
+- `true` - Registration access tokens shall be rotated when used for management operations
+- Function - A function that shall be invoked to dynamically determine whether rotation should occur based on request context and authorization server policy 
+
   
 
 
@@ -1753,7 +1863,7 @@ true
 
 ### features.requestObjects
 
-[`OIDC Core 1.0`](https://openid.net/specs/openid-connect-core-1_0-errata2.html#RequestObject) and [`RFC9101`](https://www.rfc-editor.org/rfc/rfc9101.html#name-passing-a-request-object-by) - Passing a Request Object by Value (`JAR`)  
+[OIDC Core 1.0](https://openid.net/specs/openid-connect-core-1_0-errata2.html#RequestObject) and [RFC9101](https://www.rfc-editor.org/rfc/rfc9101.html#name-passing-a-request-object-by) - Passing a Request Object by Value (JAR)  
 
 Specifies whether Request Object capabilities shall be enabled. When enabled, the authorization server shall support the use and validation of the `request` parameter for conveying authorization request parameters as JSON Web Tokens, providing enhanced security and integrity protection for authorization requests.  
 
@@ -1822,179 +1932,14 @@ false
 
 ---
 
-### features.resourceIndicators
-
-[`RFC8707`](https://www.rfc-editor.org/rfc/rfc8707.html) - Resource Indicators for OAuth 2.0  
-
-Specifies whether Resource Indicator capabilities shall be enabled. When enabled, the authorization server shall support the `resource` parameter at the authorization and token endpoints to enable issuing Access Tokens for specific Resource Servers (APIs) with enhanced audience control and scope management.   
- The authorization server implements the following resource indicator processing rules:
- - Multiple resource parameters may be present during Authorization Code Flow, Device Authorization Grant, and Backchannel Authentication Requests, but only a single audience for an Access Token is permitted.
- - Authorization and Authentication Requests that result in an Access Token being issued by the Authorization Endpoint MUST only contain a single resource (or one MUST be resolved using the `defaultResource` helper).
- - Client Credentials grant MUST only contain a single resource parameter.
- - During Authorization Code / Refresh Token / Device Code / Backchannel Authentication Request exchanges, if the exchanged code/token does not include the `'openid'` scope and only has a single resource then the resource parameter may be omitted - an Access Token for the single resource is returned.
- - During Authorization Code / Refresh Token / Device Code / Backchannel Authentication Request exchanges, if the exchanged code/token does not include the `'openid'` scope and has multiple resources then the resource parameter MUST be provided (or one MUST be resolved using the `defaultResource` helper). An Access Token for the provided/resolved resource is returned.
- - (with userinfo endpoint enabled and useGrantedResource helper returning falsy) During Authorization Code / Refresh Token / Device Code exchanges, if the exchanged code/token includes the `'openid'` scope and no resource parameter is present - an Access Token for the UserInfo Endpoint is returned.
- - (with userinfo endpoint enabled and useGrantedResource helper returning truthy) During Authorization Code / Refresh Token / Device Code exchanges, even if the exchanged code/token includes the `'openid'` scope and only has a single resource then the resource parameter may be omitted - an Access Token for the single resource is returned.
- - (with userinfo endpoint disabled) During Authorization Code / Refresh Token / Device Code exchanges, if the exchanged code/token includes the `'openid'` scope and only has a single resource then the resource parameter may be omitted - an Access Token for the single resource is returned.
- - Issued Access Tokens shall always only contain scopes that are defined on the respective Resource Server (returned from `features.resourceIndicators.getResourceServerInfo`).  
-
-
-_**default value**_:
-```js
-{
-  defaultResource: [AsyncFunction: defaultResource], // see expanded details below
-  enabled: true,
-  getResourceServerInfo: [AsyncFunction: getResourceServerInfo], // see expanded details below
-  useGrantedResource: [AsyncFunction: useGrantedResource] // see expanded details below
-}
-```
-
-<details><summary>(Click to expand) features.resourceIndicators options details</summary><br>
-
-
-#### defaultResource
-
-Specifies a helper function that shall be invoked to determine the default resource indicator for a request when none is provided by the client during the authorization request or when multiple resources are provided/resolved and only a single one is required during an Access Token Request. This function enables authorization server policy-based resource selection according to deployment requirements.  
-
-
-_**default value**_:
-```js
-async function defaultResource(ctx, client, oneOf) {
-  // @param ctx - koa request context
-  // @param client - client making the request
-  // @param oneOf {string[]} - The authorization server needs to select **one** of the values provided.
-  //                           Default is that the array is provided so that the request will fail.
-  //                           This argument is only provided when called during
-  //                           Authorization Code / Refresh Token / Device Code exchanges.
-  if (oneOf) return oneOf;
-  return undefined;
-}
-```
-
-#### getResourceServerInfo
-
-Specifies a helper function that shall be invoked to load information about a Resource Server (API) and determine whether the client is authorized to request scopes for that particular resource. This function enables resource-specific scope validation and Access Token configuration according to authorization server policy.   
-  
-
-_**recommendation**_: Only allow client's pre-registered resource values. To pre-register these you shall use the `extraClientMetadata` configuration option to define a custom metadata and use that to implement your policy using this function.  
-
-
-_**default value**_:
-```js
-async function getResourceServerInfo(ctx, resourceIndicator, client) {
-  // @param ctx - koa request context
-  // @param resourceIndicator - resource indicator value either requested or resolved by the defaultResource helper.
-  // @param client - client making the request
-  throw new errors.InvalidTarget();
-}
-```
-<a id="get-resource-server-info-resource-server-definition"></a><details><summary>Example: (Click to expand) Resource Server Definition.</summary><br>
-
-```js
-{
-  // REQUIRED
-  // available scope values (space-delimited string)
-  scope: string,
-  // OPTIONAL
-  // "aud" (Audience) value to use
-  // Default is the resource indicator value will be used as token audience
-  audience?: string,
-  // OPTIONAL
-  // Issued Token TTL
-  // Default is - see `ttl` configuration
-  accessTokenTTL?: number,
-  // Issued Token Format
-  // Default is - opaque
-  accessTokenFormat?: 'opaque' | 'jwt',
-  // JWT Access Token Format (when accessTokenFormat is 'jwt')
-  // Default is `{ sign: { alg: 'RS256' }, encrypt: false }`
-  // Tokens may be signed, signed and then encrypted, or just encrypted JWTs.
-  jwt?: {
-    // Tokens will be signed
-    sign?:
-     | {
-         alg?: string, // 'PS256' | 'PS384' | 'PS512' | 'ES256' | 'ES384' | 'ES512' | 'Ed25519' | 'RS256' | 'RS384' | 'RS512' | 'EdDSA' | 'ML-DSA-44' | 'ML-DSA-65' | 'ML-DSA-87'
-         kid?: string, // OPTIONAL `kid` to aid in signing key selection
-       }
-     | {
-         alg: string, // 'HS256' | 'HS384' | 'HS512'
-         key: CryptoKey | KeyObject | Buffer, // shared symmetric secret to sign the JWT token with
-         kid?: string, // OPTIONAL `kid` JOSE Header Parameter to put in the token's JWS Header
-       },
-    // Tokens will be encrypted
-    encrypt?: {
-      alg: string, // 'dir' | 'RSA-OAEP' | 'RSA-OAEP-256' | 'RSA-OAEP-384' | 'RSA-OAEP-512' | 'ECDH-ES' | 'ECDH-ES+A128KW' | 'ECDH-ES+A192KW' | 'ECDH-ES+A256KW' | 'A128KW' | 'A192KW' | 'A256KW' | 'A128GCMKW' | 'A192GCMKW' | 'A256GCMKW'
-      enc: string, // 'A128CBC-HS256' | 'A128GCM' | 'A192CBC-HS384' | 'A192GCM' | 'A256CBC-HS512' | 'A256GCM'
-      key: CryptoKey | KeyObject | Buffer, // public key or shared symmetric secret to encrypt the JWT token with
-      kid?: string, // OPTIONAL `kid` JOSE Header Parameter to put in the token's JWE Header
-    }
-  }
-}
-```
-</details>
-<a id="get-resource-server-info-resource-server-api-with-two-scopes-an-expected-audience-value-an-access-token-ttl-and-a-jwt-access-token-format"></a><details><summary>Example: (Click to expand) Resource Server (API) with two scopes, an expected audience value, an Access Token TTL and a JWT Access Token Format.</summary><br>
-
-```js
-{
-  scope: 'api:read api:write',
-  audience: 'resource-server-audience-value',
-  accessTokenTTL: 2 * 60 * 60, // 2 hours
-  accessTokenFormat: 'jwt',
-  jwt: {
-    sign: { alg: 'ES256' },
-  },
-}
-```
-</details>
-<a id="get-resource-server-info-resource-server-api-with-two-scopes-and-a-symmetrically-encrypted-jwt-access-token-format"></a><details><summary>Example: (Click to expand) Resource Server (API) with two scopes and a symmetrically encrypted JWT Access Token Format.</summary><br>
-
-```js
-{
-  scope: 'api:read api:write',
-  accessTokenFormat: 'jwt',
-  jwt: {
-    sign: false,
-    encrypt: {
-      alg: 'dir',
-      enc: 'A128CBC-HS256',
-      key: Buffer.from('f40dd9591646bebcb9c32aed02f5e610c2d15e1d38cde0c1fe14a55cf6bfe2d9', 'hex')
-    },
-  }
-}
-```
-</details>
-
-#### useGrantedResource
-
-Specifies a helper function that shall be invoked to determine whether an already granted resource indicator should be used without being explicitly requested by the client during the Token Endpoint request. This function enables flexible resource selection policies for token issuance operations.   
-  
-
-_**recommendation**_: Use `return true` when it's allowed for a client to skip providing the "resource" parameter at the Token Endpoint.  
-
-_**recommendation**_: Use `return false` (default) when it's required for a client to explicitly provide a "resource" parameter at the Token Endpoint or when other indication dictates an Access Token for the UserInfo Endpoint should be returned.  
-
-
-_**default value**_:
-```js
-async function useGrantedResource(ctx, model) {
-  // @param ctx - koa request context
-  // @param model - depending on the request's grant_type this can be either an AuthorizationCode, BackchannelAuthenticationRequest,
-  //                RefreshToken, or DeviceCode model instance.
-  return false;
-}
-```
-
-</details>
-
----
-
 ### features.revocation
 
-[`RFC7009`](https://www.rfc-editor.org/rfc/rfc7009.html) - OAuth 2.0 Token Revocation  
+[RFC7009](https://www.rfc-editor.org/rfc/rfc7009.html) - OAuth 2.0 Token Revocation  
 
-Specifies whether Token Revocation capabilities shall be enabled. When enabled, the authorization server shall expose a token revocation endpoint that allows authorized clients and resource servers to notify the authorization server that a particular token is no longer needed. This feature supports revocation of the following token types:
- - Opaque access tokens
- - Refresh tokens   
+Specifies whether Token Revocation capabilities shall be enabled. When enabled, the authorization server shall expose a token revocation endpoint that allows authorized clients to notify the authorization server that a particular token is no longer needed. This feature supports revocation of the following token types:
+- Opaque access tokens
+- Refresh tokens 
+
   
 
 
@@ -2035,175 +1980,9 @@ async function revocationAllowedPolicy(ctx, client, token) {
 
 ---
 
-### features.richAuthorizationRequests
-
-[`RFC9396`](https://www.rfc-editor.org/rfc/rfc9396.html) - OAuth 2.0 Rich Authorization Requests  
-
-> [!NOTE]
-> This is an experimental feature.
-
-Specifies whether Rich Authorization Request capabilities shall be enabled. When enabled, the authorization server shall support the `authorization_details` parameter at the authorization and token endpoints to enable issuing Access Tokens with fine-grained authorization data and enhanced authorization scope control.  
-
-
-_**default value**_:
-```js
-{
-  ack: undefined,
-  enabled: false,
-  rarForAuthorizationCode: [Function: rarForAuthorizationCode], // see expanded details below
-  rarForCodeResponse: [Function: rarForCodeResponse], // see expanded details below
-  rarForIntrospectionResponse: [Function: rarForIntrospectionResponse], // see expanded details below
-  rarForRefreshTokenResponse: [Function: rarForRefreshTokenResponse], // see expanded details below
-  types: {}
-}
-```
-
-<details><summary>(Click to expand) features.richAuthorizationRequests options details</summary><br>
-
-
-#### rarForAuthorizationCode
-
-Specifies a helper function that shall be invoked to transform the requested and granted Rich Authorization Request details for storage in the authorization code. This function enables filtering and processing of authorization details according to authorization server policy before code persistence. The function shall return an array of authorization details or undefined.  
-
-
-_**default value**_:
-```js
-rarForAuthorizationCode(ctx) {
-  // decision points:
-  // - ctx.oidc.client
-  // - ctx.oidc.resourceServers
-  // - ctx.oidc.params.authorization_details (unparsed authorization_details from the authorization request)
-  // - ctx.oidc.grant.rar (authorization_details granted)
-  throw new Error(
-    'features.richAuthorizationRequests.rarForAuthorizationCode not implemented',
-  );
-}
-```
-
-#### rarForCodeResponse
-
-Specifies a helper function that shall be invoked to transform the requested and granted Rich Authorization Request details for inclusion in the Access Token Response as authorization_details and assignment to the issued Access Token. This function enables resource-specific filtering and transformation of authorization details according to token endpoint policy. The function shall return an array of authorization details or undefined.  
-
-
-_**default value**_:
-```js
-rarForCodeResponse(ctx, resourceServer) {
-  // decision points:
-  // - ctx.oidc.client
-  // - resourceServer
-  // - ctx.oidc.authorizationCode.rar (previously returned from rarForAuthorizationCode)
-  // - ctx.oidc.params.authorization_details (unparsed authorization_details from the body params in the Access Token Request)
-  // - ctx.oidc.grant.rar (authorization_details granted)
-  throw new Error(
-    'features.richAuthorizationRequests.rarForCodeResponse not implemented',
-  );
-}
-```
-
-#### rarForIntrospectionResponse
-
-Specifies a helper function that shall be invoked to transform the token's stored Rich Authorization Request details for inclusion in the Token Introspection Response. This function enables filtering and processing of authorization details according to introspection endpoint policy and requesting party authorization. The function shall return an array of authorization details or undefined.  
-
-
-_**default value**_:
-```js
-rarForIntrospectionResponse(ctx, token) {
-  // decision points:
-  // - ctx.oidc.client
-  // - token.kind
-  // - token.rar
-  // - ctx.oidc.grant.rar
-  throw new Error(
-    'features.richAuthorizationRequests.rarForIntrospectionResponse not implemented',
-  );
-}
-```
-
-#### rarForRefreshTokenResponse
-
-Specifies a helper function that shall be invoked to transform the requested and granted Rich Authorization Request details for inclusion in the Access Token Response during refresh token exchanges as authorization_details and assignment to the newly issued Access Token. This function enables resource-specific processing of previously granted authorization details according to refresh token policy. The function shall return an array of authorization details or undefined.  
-
-
-_**default value**_:
-```js
-rarForRefreshTokenResponse(ctx, resourceServer) {
-  // decision points:
-  // - ctx.oidc.client
-  // - resourceServer
-  // - ctx.oidc.refreshToken.rar (previously returned from rarForAuthorizationCode and later assigned to the refresh token)
-  // - ctx.oidc.params.authorization_details (unparsed authorization_details from the body params in the Access Token Request)
-  // - ctx.oidc.grant.rar
-  throw new Error(
-    'features.richAuthorizationRequests.rarForRefreshTokenResponse not implemented',
-  );
-}
-```
-
-#### types
-
-Specifies the authorization details type identifiers that shall be supported by the authorization server. Each type identifier MUST have an associated validation function that defines the required structure and constraints for authorization details of that specific type according to authorization server policy.   
-  
-
-
-_**default value**_:
-```js
-{}
-```
-<a id="types-authorization-details-type-validation-for-tax-data-access"></a><details><summary>Example: (Click to expand) Authorization details type validation for tax data access.</summary><br>
-
-```js
-import { z } from 'zod'
-const TaxData = z
-  .object({
-    duration_of_access: z.number().int().positive(),
-    locations: z
-      .array(
-        z.literal('https://taxservice.govehub.no.example.com'),
-      )
-      .length(1),
-    actions: z
-      .array(z.literal('read_tax_declaration'))
-      .length(1),
-    periods: z
-      .array(
-        z.coerce
-          .number()
-          .max(new Date().getFullYear() - 1)
-          .min(1997),
-      )
-      .min(1),
-    tax_payer_id: z.string().min(1),
-  })
-  .strict()
-const configuration = {
-  features: {
-    richAuthorizationRequests: {
-      enabled: true,
-      // ...
-      types: {
-        tax_data: {
-          validate(ctx, detail, client) {
-            const { success: valid, error } =
-              TaxData.parse(detail)
-            if (!valid) {
-              throw new InvalidAuthorizationDetails()
-            }
-          },
-        },
-      },
-    },
-  },
-}
-```
-</details>
-
-</details>
-
----
-
 ### features.rpInitiatedLogout
 
-[`OIDC RP-Initiated Logout 1.0`](https://openid.net/specs/openid-connect-rpinitiated-1_0-final.html)  
+[OIDC RP-Initiated Logout 1.0](https://openid.net/specs/openid-connect-rpinitiated-1_0-final.html)  
 
 Specifies whether RP-Initiated Logout capabilities shall be enabled. When enabled, the authorization server shall support logout requests initiated by relying parties, allowing clients to request termination of end-user sessions.  
 
@@ -2279,48 +2058,9 @@ async function postLogoutSuccessSource(ctx) {
 
 ---
 
-### features.rpMetadataChoices
-
-[`OIDC Relying Party Metadata Choices 1.0 - Implementers Draft 01`](https://openid.net/specs/openid-connect-rp-metadata-choices-1_0-ID1.html)  
-
-> [!NOTE]
-> This is an experimental feature.
-
-Specifies whether Relying Party Metadata Choices capabilities shall be enabled. When enabled, the authorization server shall support the following multi-valued input parameters metadata from the Relying Party Metadata Choices draft, provided that their underlying feature is also enabled:   
- - subject_types_supported
- - id_token_signing_alg_values_supported
- - id_token_encryption_alg_values_supported
- - id_token_encryption_enc_values_supported
- - userinfo_signing_alg_values_supported
- - userinfo_encryption_alg_values_supported
- - userinfo_encryption_enc_values_supported
- - request_object_signing_alg_values_supported
- - request_object_encryption_alg_values_supported
- - request_object_encryption_enc_values_supported
- - token_endpoint_auth_methods_supported
- - token_endpoint_auth_signing_alg_values_supported
- - introspection_signing_alg_values_supported
- - introspection_encryption_alg_values_supported
- - introspection_encryption_enc_values_supported
- - authorization_signing_alg_values_supported
- - authorization_encryption_alg_values_supported
- - authorization_encryption_enc_values_supported
- - backchannel_authentication_request_signing_alg_values_supported  
-
-
-_**default value**_:
-```js
-{
-  ack: undefined,
-  enabled: false
-}
-```
-
----
-
 ### features.userinfo
 
-[`OIDC Core 1.0`](https://openid.net/specs/openid-connect-core-1_0-errata2.html#UserInfo) - UserInfo Endpoint  
+[OIDC Core 1.0](https://openid.net/specs/openid-connect-core-1_0-errata2.html#UserInfo) - UserInfo Endpoint  
 
 Specifies whether the UserInfo Endpoint shall be enabled. When enabled, the authorization server shall expose a UserInfo endpoint that returns claims about the authenticated end-user. Access to this endpoint requires an opaque Access Token with at least `openid` scope that does not have a Resource Server audience.  
 
@@ -2334,17 +2074,412 @@ _**default value**_:
 
 ---
 
-### features.webMessageResponseMode
+### features.attestClientAuth
 
-[draft-sakimura-oauth-wmrm-01](https://tools.ietf.org/html/draft-sakimura-oauth-wmrm-01) - OAuth 2.0 Web Message Response Mode  
+[draft-ietf-oauth-attestation-based-client-auth-06](https://www.ietf.org/archive/id/draft-ietf-oauth-attestation-based-client-auth-06.html) - OAuth 2.0 Attestation-Based Client Authentication  
 
 > [!NOTE]
 > This is an experimental feature.
 
-Specifies whether Web Message Response Mode capabilities shall be enabled. When enabled, the authorization server shall support the `web_message` response mode for returning authorization responses via HTML5 Web Messaging. The implementation shall support only Simple Mode operation; authorization requests containing Relay Mode parameters will be rejected.   
+Specifies whether Attestation-Based Client Authentication capabilities shall be enabled. When enabled, the authorization server shall support the `attest_jwt_client_auth` authentication method within the server's `clientAuthMethods` configuration. This mechanism enables Client Instances to authenticate using a Client Attestation JWT issued by a trusted Client Attester and a corresponding Client Attestation Proof-of-Possession JWT generated by the Client Instance. 
+
   
 
-_**recommendation**_: Although a general advise to use a `helmet` (e.g. for [express](https://www.npmjs.com/package/helmet), [koa](https://www.npmjs.com/package/koa-helmet)) it is especially advised for your interaction views routes if Web Message Response Mode is enabled in your deployment. You will have to experiment with removal of the Cross-Origin-Embedder-Policy and Cross-Origin-Opener-Policy headers at various endpoints throughout the authorization request end-user journey to finalize this feature.  
+
+_**default value**_:
+```js
+{
+  ack: undefined,
+  assertAttestationJwtAndPop: [AsyncFunction: assertAttestationJwtAndPop], // see expanded details below
+  challengeSecret: undefined,
+  enabled: false,
+  getAttestationSignaturePublicKey: [AsyncFunction: getAttestationSignaturePublicKey] // see expanded details below
+}
+```
+
+<details><summary>(Click to expand) features.attestClientAuth options details</summary><br>
+
+
+#### assertAttestationJwtAndPop
+
+Specifies a helper function that shall be invoked to perform additional validation of the Client Attestation JWT and Client Attestation Proof-of-Possession JWT beyond the specification requirements. This enables enforcement of extension profiles, deployment-specific policies, or additional security constraints. 
+
+At the point of invocation, both JWTs have undergone signature verification and standard validity claim validation. The function may throw errors to reject non-compliant attestations or return successfully to indicate acceptance of the client authentication attempt.  
+
+
+_**default value**_:
+```js
+async function assertAttestationJwtAndPop(ctx, attestation, pop, client) {
+  // @param ctx - koa request context
+  // @param attestation - verified and parsed Attestation JWT
+  //        attestation.protectedHeader - parsed protected header object
+  //        attestation.payload - parsed protected header object
+  //        attestation.key - CryptoKey that verified the Attestation JWT signature
+  // @param pop - verified and parsed Attestation JWT PoP
+  //        pop.protectedHeader - parsed protected header object
+  //        pop.payload - parsed protected header object
+  //        pop.key - CryptoKey that verified the Attestation JWT PoP signature
+  // @param client - client making the request
+}
+```
+
+#### challengeSecret
+
+Specifies the cryptographic secret value used for generating server-provided challenges. This value MUST be a 32-byte Buffer instance to ensure sufficient entropy for secure challenge generation.  
+
+
+_**default value**_:
+```js
+undefined
+```
+
+#### getAttestationSignaturePublicKey
+
+Specifies a helper function that shall be invoked to verify the issuer identifier of a Client Attestation JWT and retrieve the public key used for signature verification. At the point of this function's invocation, only the JWT format has been validated; no cryptographic or claims verification has occurred. 
+
+The function MUST return a public key in one of the supported formats: CryptoKey, KeyObject, or JSON Web Key (JWK) representation. The authorization server shall use this key to verify the Client Attestation JWT signature. 
+
+  
+
+
+_**default value**_:
+```js
+async function getAttestationSignaturePublicKey(ctx, iss, header, client) {
+  // @param ctx - koa request context
+  // @param iss - Issuer Identifier from the Client Attestation JWT
+  // @param header - Protected Header of the Client Attestation JWT
+  // @param client - client making the request
+  throw new Error('features.attestClientAuth.getAttestationSignaturePublicKey not implemented');
+}
+```
+<a id="get-attestation-signature-public-key-fetching-attester-public-keys-from-the-attester's-hosted-jwks"></a><details><summary>Example: (Click to expand) Fetching attester public keys from the attester's hosted JWKS</summary><br>
+
+```js
+import * as jose from 'jose';
+const attesters = new Map(Object.entries({
+  'https://attester.example.com': jose.createRemoteJWKSet(new URL('https://attester.example.com/jwks')),
+}));
+function getAttestationSignaturePublicKey(ctx, iss, header, client) {
+  if (attesters.has(iss)) return attesters.get(iss)(header);
+  throw new Error('unsupported oauth-client-attestation issuer');
+}
+```
+</details>
+
+</details>
+
+---
+
+### features.clientIdMetadataDocument
+
+[`draft-ietf-oauth-client-id-metadata-document-01`](https://www.ietf.org/archive/id/draft-ietf-oauth-client-id-metadata-document-01.html) - OAuth Client ID Metadata Document (CIMD)  
+
+> [!NOTE]
+> This is an experimental feature.
+
+Specifies whether the authorization server shall support resolving client metadata from HTTPS URLs used as `client_id` values. When enabled, if a `client_id` is an HTTPS URL conforming to the specification's requirements, the authorization server shall fetch the client metadata document from that URL and use it as the client's registration data, without requiring prior client registration. 
+
+  
+
+
+_**default value**_:
+```js
+{
+  ack: undefined,
+  allowClient: [AsyncFunction: allowClient], // see expanded details below
+  allowFetch: [AsyncFunction: allowFetch], // see expanded details below
+  cacheDuration: {
+    max: 86400,
+    min: 30
+  },
+  enabled: false
+}
+```
+
+<details><summary>(Click to expand) features.clientIdMetadataDocument options details</summary><br>
+
+
+#### allowClient
+
+Specifies a helper function that shall be invoked every time a client resolved from a metadata document is about to be used, including when served from cache. This function enables per-request evaluation of trust and authorization policies for metadata-document-resolved clients. Return `true` to allow the client, or `false` to reject it.  
+
+
+_**default value**_:
+```js
+async allowClient(ctx, client) {
+  return true;
+}
+```
+
+#### allowFetch
+
+Specifies a helper function that shall be invoked before fetching a client metadata document from a `client_id` URL. This function enables enforcement of domain allowlisting, rate limiting, or other security policies. Return `true` to allow the fetch, or `false` to reject the `client_id`.  
+
+
+_**default value**_:
+```js
+async allowFetch(ctx, clientId) {
+  return true;
+}
+```
+
+#### cacheDuration
+
+Specifies the minimum and maximum cache duration bounds (in seconds) applied to HTTP cache headers when caching fetched client metadata documents. Cache-Control and Expires response headers are respected within these bounds.  
+
+
+_**default value**_:
+```js
+{
+  max: 86400,
+  min: 30
+}
+```
+
+</details>
+
+---
+
+### features.externalSigningSupport
+
+External Signing Support  
+
+> [!NOTE]
+> This is an experimental feature.
+
+Specifies whether external signing capabilities shall be enabled. When enabled, the authorization server shall support the use of `ExternalSigningKey` class instances in place of private JWK entries within the `jwks.keys` configuration array. This feature enables Digital Signature Algorithm operations (such as PS256, ES256, or other supported algorithms) to be performed by external cryptographic services, including Key Management Services (KMS) and Hardware Security Modules (HSM), providing enhanced security for private key material through externalized signing operations. 
+
+  
+
+See [KMS integration with AWS Key Management Service](https://github.com/panva/node-oidc-provider/discussions/1316)
+
+_**default value**_:
+```js
+{
+  ack: undefined,
+  enabled: false
+}
+```
+
+---
+
+### features.richAuthorizationRequests
+
+[RFC9396](https://www.rfc-editor.org/rfc/rfc9396.html) - OAuth 2.0 Rich Authorization Requests  
+
+> [!NOTE]
+> This is an experimental feature.
+
+Specifies whether Rich Authorization Request capabilities shall be enabled. When enabled, the authorization server shall support the `authorization_details` parameter at the authorization and token endpoints to enable issuing Access Tokens with fine-grained authorization data and enhanced authorization scope control.  
+
+
+_**default value**_:
+```js
+{
+  ack: undefined,
+  enabled: false,
+  rarForAuthorizationCode: [Function: rarForAuthorizationCode], // see expanded details below
+  rarForBackchannelResponse: [Function: rarForBackchannelResponse], // see expanded details below
+  rarForCodeResponse: [Function: rarForCodeResponse], // see expanded details below
+  rarForIntrospectionResponse: [Function: rarForIntrospectionResponse], // see expanded details below
+  rarForRefreshTokenResponse: [Function: rarForRefreshTokenResponse], // see expanded details below
+  types: {}
+}
+```
+
+<details><summary>(Click to expand) features.richAuthorizationRequests options details</summary><br>
+
+
+#### rarForAuthorizationCode
+
+Specifies a helper function that shall be invoked to transform the requested and granted Rich Authorization Request details for storage in the authorization code. This function enables filtering and processing of authorization details according to authorization server policy before code persistence. The function shall return an array of authorization details or undefined.  
+
+
+_**default value**_:
+```js
+rarForAuthorizationCode(ctx) {
+  // decision points:
+  // - ctx.oidc.client
+  // - ctx.oidc.resourceServers
+  // - ctx.oidc.params.authorization_details (unparsed authorization_details from the authorization request)
+  // - ctx.oidc.grant.rar (authorization_details granted)
+  throw new Error(
+    'features.richAuthorizationRequests.rarForAuthorizationCode not implemented',
+  );
+}
+```
+
+#### rarForBackchannelResponse
+
+Specifies a helper function that shall be invoked to transform the requested and granted Rich Authorization Request details for inclusion in the Access Token Response as authorization_details and assignment to the issued Access Token during the ciba grant. This function enables resource-specific filtering and transformation of authorization details according to token endpoint policy. The function shall return an array of authorization details or undefined.  
+
+
+_**default value**_:
+```js
+rarForBackchannelResponse(ctx, resourceServer) {
+  // decision points:
+  // - ctx.oidc.client
+  // - resourceServer
+  // - ctx.oidc.entities.BackchannelAuthenticationRequest.rar (the rar applied during await provider.backchannelResult())
+  // - ctx.oidc.entities.BackchannelAuthenticationRequest.params.authorization_details (the original backchannel authentication request authorization_details object)
+  // - ctx.oidc.params.authorization_details (unparsed authorization_details from the body params in the Access Token Request)
+  // - ctx.oidc.grant.rar (authorization_details granted)
+  throw new Error(
+    'features.richAuthorizationRequests.rarForBackchannelResponse not implemented',
+  );
+}
+```
+
+#### rarForCodeResponse
+
+Specifies a helper function that shall be invoked to transform the requested and granted Rich Authorization Request details for inclusion in the Access Token Response as authorization_details and assignment to the issued Access Token during the authorization code grant. This function enables resource-specific filtering and transformation of authorization details according to token endpoint policy. The function shall return an array of authorization details or undefined.  
+
+
+_**default value**_:
+```js
+rarForCodeResponse(ctx, resourceServer) {
+  // decision points:
+  // - ctx.oidc.client
+  // - resourceServer
+  // - ctx.oidc.authorizationCode.rar (previously returned from rarForAuthorizationCode)
+  // - ctx.oidc.params.authorization_details (unparsed authorization_details from the body params in the Access Token Request)
+  // - ctx.oidc.grant.rar (authorization_details granted)
+  throw new Error(
+    'features.richAuthorizationRequests.rarForCodeResponse not implemented',
+  );
+}
+```
+
+#### rarForIntrospectionResponse
+
+Specifies a helper function that shall be invoked to transform the token's stored Rich Authorization Request details for inclusion in the Token Introspection Response. This function enables filtering and processing of authorization details according to introspection endpoint policy and requesting party authorization. The function shall return an array of authorization details or undefined.  
+
+
+_**default value**_:
+```js
+rarForIntrospectionResponse(ctx, token) {
+  // decision points:
+  // - ctx.oidc.client
+  // - token.kind
+  // - token.rar
+  // - ctx.oidc.grant.rar
+  throw new Error(
+    'features.richAuthorizationRequests.rarForIntrospectionResponse not implemented',
+  );
+}
+```
+
+#### rarForRefreshTokenResponse
+
+Specifies a helper function that shall be invoked to transform the requested and granted Rich Authorization Request details for inclusion in the Access Token Response during refresh token exchanges as authorization_details and assignment to the newly issued Access Token. This function enables resource-specific processing of previously granted authorization details according to refresh token policy. The function shall return an array of authorization details or undefined.  
+
+
+_**default value**_:
+```js
+rarForRefreshTokenResponse(ctx, resourceServer) {
+  // decision points:
+  // - ctx.oidc.client
+  // - resourceServer
+  // - ctx.oidc.refreshToken.rar (previously returned from rarForAuthorizationCode and later assigned to the refresh token)
+  // - ctx.oidc.params.authorization_details (unparsed authorization_details from the body params in the Access Token Request)
+  // - ctx.oidc.grant.rar
+  throw new Error(
+    'features.richAuthorizationRequests.rarForRefreshTokenResponse not implemented',
+  );
+}
+```
+
+#### types
+
+Specifies the authorization details type identifiers that shall be supported by the authorization server. Each type identifier MUST have an associated validation function that defines the required structure and constraints for authorization details of that specific type according to authorization server policy. 
+
+  
+
+
+_**default value**_:
+```js
+{}
+```
+<a id="types-authorization-details-type-validation-for-tax-data-access"></a><details><summary>Example: (Click to expand) Authorization details type validation for tax data access.</summary><br>
+
+```js
+import { z } from 'zod'
+const TaxData = z
+  .object({
+    duration_of_access: z.number().int().positive(),
+    locations: z
+      .array(
+        z.literal('https://taxservice.govehub.no.example.com'),
+      )
+      .length(1),
+    actions: z
+      .array(z.literal('read_tax_declaration'))
+      .length(1),
+    periods: z
+      .array(
+        z.coerce
+          .number()
+          .max(new Date().getFullYear() - 1)
+          .min(1997),
+      )
+      .min(1),
+    tax_payer_id: z.string().min(1),
+  })
+  .strict()
+const configuration = {
+  features: {
+    richAuthorizationRequests: {
+      enabled: true,
+      // ...
+      types: {
+        tax_data: {
+          validate(ctx, detail, client) {
+            const { success: valid, error } =
+              TaxData.safeParse(detail)
+            if (!valid) {
+              throw new InvalidAuthorizationDetails()
+            }
+          },
+        },
+      },
+    },
+  },
+}
+```
+</details>
+
+</details>
+
+---
+
+### features.rpMetadataChoices
+
+[OIDC Relying Party Metadata Choices 1.0 - Implementers Draft 01](https://openid.net/specs/openid-connect-rp-metadata-choices-1_0-ID1.html)  
+
+> [!NOTE]
+> This is an experimental feature.
+
+Specifies whether Relying Party Metadata Choices capabilities shall be enabled. When enabled, the authorization server shall support the following multi-valued input parameters metadata from the Relying Party Metadata Choices draft, provided that their underlying feature is also enabled: 
+
+- subject_types_supported
+- id_token_signing_alg_values_supported
+- id_token_encryption_alg_values_supported
+- id_token_encryption_enc_values_supported
+- userinfo_signing_alg_values_supported
+- userinfo_encryption_alg_values_supported
+- userinfo_encryption_enc_values_supported
+- request_object_signing_alg_values_supported
+- request_object_encryption_alg_values_supported
+- request_object_encryption_enc_values_supported
+- token_endpoint_auth_methods_supported
+- token_endpoint_auth_signing_alg_values_supported
+- introspection_signing_alg_values_supported
+- introspection_encryption_alg_values_supported
+- introspection_encryption_enc_values_supported
+- authorization_signing_alg_values_supported
+- authorization_encryption_alg_values_supported
+- authorization_encryption_enc_values_supported
+- backchannel_authentication_request_signing_alg_values_supported  
 
 
 _**default value**_:
@@ -2357,9 +2492,199 @@ _**default value**_:
 
 ---
 
+### features.webMessageResponseMode
+
+[draft-sakimura-oauth-wmrm-01](https://tools.ietf.org/html/draft-sakimura-oauth-wmrm-01) - OAuth 2.0 Web Message Response Mode  
+
+> [!NOTE]
+> This is an experimental feature.
+
+Specifies whether Web Message Response Mode capabilities shall be enabled. When enabled, the authorization server shall support the `web_message` response mode for returning authorization responses via HTML5 Web Messaging. The implementation shall support only Simple Mode operation; authorization requests containing Relay Mode parameters will be rejected. 
+
+  
+
+_**recommendation**_: Although a general advice to use a `helmet` (e.g. for [express](https://www.npmjs.com/package/helmet), [koa](https://www.npmjs.com/package/koa-helmet)) it is especially advised for your interaction views routes if Web Message Response Mode is enabled in your deployment. You will have to experiment with removal of the Cross-Origin-Embedder-Policy and Cross-Origin-Opener-Policy headers at various endpoints throughout the authorization request end-user journey to finalize this feature.  
+
+
+_**default value**_:
+```js
+{
+  ack: undefined,
+  enabled: false
+}
+```
+
+---
+
+### findAccount
+
+Account Loading and Claims Resolution  
+
+Specifies a function that shall be invoked to load an account and retrieve its available claims during authorization server operations. This function enables the authorization server to resolve end-user account information based on the provided account identifier. The function MUST return a Promise that resolves to an account object containing an `accountId` property and a `claims()` method that returns an object with claims corresponding to the claims supported by the issuer. The `claims()` method may also return a Promise that shall be resolved or rejected according to account availability and authorization server policy.  
+
+
+_**default value**_:
+```js
+async function findAccount(ctx, sub, token) {
+  // @param ctx - koa request context
+  // @param sub {string} - account identifier (subject)
+  // @param token - is a reference to the token used for which a given account is being loaded,
+  //   is undefined in scenarios where claims are returned from authorization endpoint
+  return {
+    accountId: sub,
+    // @param use {string} - can either be "id_token" or "userinfo", depending on
+    //   where the specific claims are intended to be put in
+    // @param scope {string} - the intended scope, while oidc-provider will mask
+    //   claims depending on the scope automatically you might want to skip
+    //   loading some claims from external resources or through db projection etc. based on this
+    //   detail or not return them in ID Tokens but only UserInfo and so on
+    // @param claims {object} - the part of the claims authorization parameter for either
+    //   "id_token" or "userinfo" (depends on the "use" param)
+    // @param rejected {Array[String]} - claim names that were rejected by the end-user, you might
+    //   want to skip loading some claims from external resources or through db projection
+    async claims(use, scope, claims, rejected) {
+      return { sub };
+    },
+  };
+}
+```
+
+---
+
+### interactions
+
+End-User Interaction Policy  
+
+Specifies the configuration for interaction policy and end-user redirection that shall be applied to determine when user interaction is required during the authorization process. This configuration enables customization of authentication and consent flows according to deployment-specific requirements. 
+
+  
+
+
+---
+
+### jwks
+
+JSON Web Key Set (JWKS)  
+
+Specifies the JSON Web Key Set that shall be used by the authorization server for cryptographic signing and decryption operations. The key set MUST be provided in [JWK Set format](https://www.rfc-editor.org/rfc/rfc7517.html#section-5) as defined in RFC 7517. All keys within the set MUST be private keys. 
+
+Supported key types include: 
+
+- RSA
+- OKP (Ed25519 and X25519 subtypes)
+- EC (P-256, P-384, and P-521 curves) 
+
+  
+
+_**recommendation**_: Be sure to follow best practices for distributing private keying material and secrets for your respective target deployment environment. 
+
+  
+
+_**recommendation**_: The following action order is recommended when rotating signing keys on a distributed deployment with rolling reloads in place. 
+
+1. push new keys at the very end of the "keys" array in your JWKS, this means the keys will become available for verification should they be encountered but not yet used for signing
+2. reload all your processes
+3. move your new key to the very front of the "keys" array in your JWKS, this means the key will be used for signing after reload
+4. reload all your processes 
+
+  
+
+
+---
+
+### pkce
+
+[RFC7636](https://www.rfc-editor.org/rfc/rfc7636.html) - Proof Key for Code Exchange (PKCE)  
+
+Specifies the PKCE configuration, such as a policy check on the required use of PKCE. 
+
+  
+
+
+---
+
+### ttl
+
+Artifact Expirations (TTL)  
+
+Specifies the Time-To-Live (TTL) values that shall be applied to various artifacts within the authorization server. TTL values may be specified as either a numeric value (in seconds) or a synchronous function that returns a numeric value based on the current request context and authorization server policy. 
+
+  
+
+_**recommendation**_: Token TTL values should be set to the minimum duration necessary for the intended use case to minimize security exposure. 
+
+  
+
+_**recommendation**_: For refresh tokens requiring extended lifetimes, consider utilizing the `rotateRefreshToken` configuration option, which extends effective token lifetime through rotation rather than extended initial TTL values. 
+
+  
+
+
+_**default value**_:
+```js
+{
+  AccessToken: function AccessTokenTTL(ctx, token, client) {
+    return token.resourceServer?.accessTokenTTL || 60 * 60; // 1 hour in seconds
+  },
+  AuthorizationCode: 60 /* 1 minute in seconds */,
+  BackchannelAuthenticationRequest: function BackchannelAuthenticationRequestTTL(ctx, request, client) {
+    if (ctx?.oidc?.params.requested_expiry) {
+      return Math.min(10 * 60, +ctx.oidc.params.requested_expiry); // 10 minutes in seconds or requested_expiry, whichever is shorter
+    }
+  
+    return 10 * 60; // 10 minutes in seconds
+  },
+  ClientCredentials: function ClientCredentialsTTL(ctx, token, client) {
+    return token.resourceServer?.accessTokenTTL || 10 * 60; // 10 minutes in seconds
+  },
+  DeviceCode: 600 /* 10 minutes in seconds */,
+  Grant: 1209600 /* 14 days in seconds */,
+  IdToken: 3600 /* 1 hour in seconds */,
+  Interaction: 3600 /* 1 hour in seconds */,
+  RefreshToken: function RefreshTokenTTL(ctx, token, client) {
+    if (
+      ctx?.oidc?.entities.RotatedRefreshToken
+      && client.applicationType === 'web'
+      && client.clientAuthMethod === 'none'
+      && !token.isSenderConstrained()
+    ) {
+      // Non-Sender Constrained SPA RefreshTokens do not have infinite expiration through rotation
+      return ctx.oidc.entities.RotatedRefreshToken.remainingTTL;
+    }
+  
+    return 14 * 24 * 60 * 60; // 14 days in seconds
+  },
+  Session: 1209600 /* 14 days in seconds */
+}
+```
+<a id="ttl-to-resolve-a-ttl-on-runtime-for-each-new-token"></a><details><summary>Example: (Click to expand) To resolve a ttl on runtime for each new token.</summary><br>
+
+
+Configure `ttl` for a given token type with a function like so, this must return a value, not a Promise.
+  
+
+```js
+{
+  ttl: {
+    AccessToken(ctx, token, client) {
+      // return a Number (in seconds) for the given token (second argument), the associated client is
+      // passed as a third argument
+      // Tip: if the values are entirely client based memoize the results
+      return resolveTTLfor(token, client);
+    },
+  },
+}
+```
+</details>
+
+---
+
 ### acceptQueryParamAccessTokens
 
-Controls whether access tokens may be transmitted via URI query parameters. Several OAuth 2.0 and OpenID Connect profiles require that access tokens be transmitted exclusively via the Authorization header. When set to false, the authorization server shall reject requests attempting to transmit access tokens via query parameters.   
+Query Parameter Access Tokens  
+
+Controls whether access tokens may be transmitted via URI query parameters. Several OAuth 2.0 and OpenID Connect profiles require that access tokens be transmitted exclusively via the Authorization header. When set to false, the authorization server shall reject requests attempting to transmit access tokens via query parameters. 
+
   
 
 
@@ -2371,6 +2696,8 @@ false
 ---
 
 ### acrValues
+
+Authentication Context Class References  
 
 An array of strings representing the Authentication Context Class References that this authorization server supports.  
 
@@ -2386,8 +2713,9 @@ _**default value**_:
 
 Redirect URI Parameter Omission for Single Registered URI  
 
-Specifies whether clients may omit the `redirect_uri` parameter in authorization requests when only a single redirect URI is registered in their client metadata. When enabled, the authorization server shall automatically use the sole registered redirect URI for clients that have exactly one URI configured.   
- When disabled, all authorization requests MUST explicitly include the `redirect_uri` parameter regardless of the number of registered redirect URIs.  
+Specifies whether clients may omit the `redirect_uri` parameter in authorization requests when only a single redirect URI is registered in their client metadata. When enabled, the authorization server shall automatically use the sole registered redirect URI for clients that have exactly one URI configured. 
+
+When disabled, all authorization requests MUST explicitly include the `redirect_uri` parameter regardless of the number of registered redirect URIs.  
 
 
 _**default value**_:
@@ -2398,6 +2726,8 @@ true
 ---
 
 ### assertJwtClientAuthClaimsAndHeader
+
+JWT Client Authentication Assertion Validation  
 
 Specifies a helper function that shall be invoked to perform additional validation of JWT Client Authentication assertion Claims Set and Header beyond the requirements mandated by the specification. This function enables enforcement of deployment-specific security policies and extended validation logic for `private_key_jwt` and `client_secret_jwt` client authentication methods according to authorization server requirements.  
 
@@ -2419,34 +2749,12 @@ async function assertJwtClientAuthClaimsAndHeader(ctx, claims, header, client) {
 
 ---
 
-### claims
-
-Describes the claims that this authorization server may be able to supply values for.   
- It is used to achieve two different things related to claims:
- - which additional claims are available to RPs (configure as `{ claimName: null }`)
- - which claims fall under what scope (configure `{ scopeName: ['claim', 'another-claim'] }`)   
-  
-
-See [Configuring OpenID Connect 1.0 Standard Claims](https://github.com/panva/node-oidc-provider/discussions/1299)
-
-_**default value**_:
-```js
-{
-  acr: null,
-  auth_time: null,
-  iss: null,
-  openid: [
-    'sub'
-  ],
-  sid: null
-}
-```
-
----
-
 ### clientAuthMethods
 
-Specifies the client authentication methods that this authorization server shall support for authenticating clients at the token endpoint and other authenticated endpoints.   
+Supported Client Authentication Methods  
+
+Specifies the client authentication methods that this authorization server shall support for authenticating clients at the token endpoint and other authenticated endpoints. 
+
   
 
 
@@ -2474,28 +2782,12 @@ _**default value**_:
 
 ---
 
-### clientBasedCORS
-
-Specifies a function that determines whether Cross-Origin Resource Sharing (CORS) requests shall be permitted based on the requesting client. This function is invoked for each CORS preflight and actual request to evaluate the client's authorization to access the authorization server from the specified origin.   
-  
-
-See [Configuring Client Metadata-based CORS Origin allow list](https://github.com/panva/node-oidc-provider/discussions/1298)
-
-_**default value**_:
-```js
-function clientBasedCORS(ctx, origin, client) {
-  if (ctx.oidc.route === 'userinfo' || client.clientAuthMethod === 'none') {
-    return client.redirectUris.some((uri) => URL.parse(uri)?.origin === origin);
-  }
-  return false;
-}
-```
-
----
-
 ### clientDefaults
 
-Specifies default client metadata values that shall be applied when properties are not explicitly provided during Dynamic Client Registration or for statically configured clients. This configuration allows override of the authorization server's built-in default values for any supported client metadata property.   
+Default Client Metadata  
+
+Specifies default client metadata values that shall be applied when properties are not explicitly provided during Dynamic Client Registration or for statically configured clients. This configuration allows override of the authorization server's built-in default values for any supported client metadata property. 
+
   
 
 
@@ -2542,7 +2834,10 @@ To change the default client response_types, configure `clientDefaults` to be an
 
 ### clockTolerance
 
-Specifies the maximum acceptable clock skew tolerance (in seconds) for validating time-sensitive operations, including JWT validation for Request Objects, DPoP Proofs, and other timestamp-based security mechanisms.   
+Clock Skew Tolerance  
+
+Specifies the maximum acceptable clock skew tolerance (in seconds) for validating time-sensitive operations, including JWT validation for Request Objects and other timestamp-based security mechanisms. 
+
   
 
 _**recommendation**_: This value should be kept as small as possible while accommodating expected clock drift between the authorization server and client systems.  
@@ -2557,10 +2852,12 @@ _**default value**_:
 
 ### conformIdTokenClaims
 
-ID Token only contains End-User claims when the requested `response_type` is `id_token`  
+ID Token Claims Conformance  
 
-[`OIDC Core 1.0` - Requesting Claims using Scope Values](https://openid.net/specs/openid-connect-core-1_0-errata2.html#ScopeClaims) defines that claims requested using the `scope` parameter are only returned from the UserInfo Endpoint unless the `response_type` is `id_token`.   
- Despite this configuration, the ID Token always includes claims requested using the `scope` parameter when the userinfo endpoint is disabled, or when issuing an Access Token not applicable for access to the userinfo endpoint.   
+[`OIDC Core 1.0` - Requesting Claims using Scope Values](https://openid.net/specs/openid-connect-core-1_0-errata2.html#ScopeClaims) defines that claims requested using the `scope` parameter are only returned from the UserInfo Endpoint unless the `response_type` is `id_token`. 
+
+Despite this configuration, the ID Token always includes claims requested using the `scope` parameter when the userinfo endpoint is disabled, or when issuing an Access Token not applicable for access to the userinfo endpoint. 
+
   
 
 
@@ -2572,6 +2869,8 @@ true
 ---
 
 ### cookies
+
+HTTP Cookie Configuration  
 
 Configuration for HTTP cookies used to maintain User-Agent state throughout the authorization flow. These settings conform to the [cookies module interface specification](https://github.com/pillarjs/cookies/tree/0.9.1?tab=readme-ov-file#cookiessetname--values--options). The `maxAge` and `expires` properties are ignored; cookie lifetimes are instead controlled via the `ttl.Session` and `ttl.Interaction` configuration parameters.  
 
@@ -2626,7 +2925,11 @@ _**default value**_:
 
 ### discovery
 
-Pass additional properties to this object to extend the discovery document.  
+Extending the Discovery Document  
+
+Pass additional properties to this object to extend the discovery document. 
+
+Note: Standard discovery properties derived from the provider's configuration cannot be overridden through this object.  
 
 
 _**default value**_:
@@ -2646,7 +2949,593 @@ _**default value**_:
 
 ---
 
+### enabledJWA
+
+Supported JSON Web Algorithms (JWA)  
+
+Specifies the JSON Web Algorithm (JWA) values supported by this authorization server for various cryptographic operations, as defined in RFC 7518 and related specifications.  
+
+
+---
+
+### enabledJWA.attestSigningAlgValues
+
+JWS "alg" Algorithm values the authorization server supports to verify signed Client Attestation and Client Attestation PoP JWTs with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'ES256',
+  'Ed25519',
+  'EdDSA'
+]
+```
+<a id="enabled-jwa-attest-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'RS256', 'RS384', 'RS512',
+  'PS256', 'PS384', 'PS512',
+  'ES256', 'ES384', 'ES512',
+  'Ed25519', 'EdDSA',
+  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
+]
+```
+</details>
+
+---
+
+### enabledJWA.authorizationEncryptionAlgValues
+
+JWE "alg" Algorithm values the authorization server supports for JWT Authorization response (`JARM`) encryption 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'A128KW',
+  'A256KW',
+  'ECDH-ES',
+  'RSA-OAEP',
+  'RSA-OAEP-256',
+  'dir'
+]
+```
+<a id="enabled-jwa-authorization-encryption-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  // asymmetric RSAES based
+  'RSA-OAEP', 'RSA-OAEP-256', 'RSA-OAEP-384', 'RSA-OAEP-512',
+  // asymmetric ECDH-ES based
+  'ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW',
+  // symmetric AES key wrapping
+  'A128KW', 'A192KW', 'A256KW', 'A128GCMKW', 'A192GCMKW', 'A256GCMKW',
+  // direct encryption
+  'dir',
+]
+```
+</details>
+
+---
+
+### enabledJWA.authorizationEncryptionEncValues
+
+JWE "enc" Content Encryption Algorithm values the authorization server supports to encrypt JWT Authorization Responses (`JARM`) with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'A128CBC-HS256',
+  'A128GCM',
+  'A256CBC-HS512',
+  'A256GCM'
+]
+```
+<a id="enabled-jwa-authorization-encryption-enc-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'A128CBC-HS256', 'A128GCM', 'A192CBC-HS384', 'A192GCM', 'A256CBC-HS512', 'A256GCM',
+]
+```
+</details>
+
+---
+
+### enabledJWA.authorizationSigningAlgValues
+
+JWS "alg" Algorithm values the authorization server supports to sign JWT Authorization Responses (`JARM`) with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'RS256',
+  'PS256',
+  'ES256',
+  'Ed25519',
+  'EdDSA'
+]
+```
+<a id="enabled-jwa-authorization-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'RS256', 'RS384', 'RS512',
+  'PS256', 'PS384', 'PS512',
+  'ES256', 'ES384', 'ES512',
+  'Ed25519', 'EdDSA',
+  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
+  'HS256', 'HS384', 'HS512',
+]
+```
+</details>
+
+---
+
+### enabledJWA.clientAuthSigningAlgValues
+
+JWS "alg" Algorithm values the authorization server supports for signed JWT Client Authentication (`private_key_jwt` and `client_secret_jwt`) 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'HS256',
+  'RS256',
+  'PS256',
+  'ES256',
+  'Ed25519',
+  'EdDSA'
+]
+```
+<a id="enabled-jwa-client-auth-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'RS256', 'RS384', 'RS512',
+  'PS256', 'PS384', 'PS512',
+  'ES256', 'ES384', 'ES512',
+  'Ed25519', 'EdDSA',
+  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
+  'HS256', 'HS384', 'HS512',
+]
+```
+</details>
+
+---
+
+### enabledJWA.dPoPSigningAlgValues
+
+JWS "alg" Algorithm values the authorization server supports to verify signed DPoP proof JWTs with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'ES256',
+  'Ed25519',
+  'EdDSA'
+]
+```
+<a id="enabled-jwa-d-po-p-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'RS256', 'RS384', 'RS512',
+  'PS256', 'PS384', 'PS512',
+  'ES256', 'ES384', 'ES512',
+  'Ed25519', 'EdDSA',
+  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
+]
+```
+</details>
+
+---
+
+### enabledJWA.idTokenEncryptionAlgValues
+
+JWE "alg" Algorithm values the authorization server supports for ID Token encryption 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'A128KW',
+  'A256KW',
+  'ECDH-ES',
+  'RSA-OAEP',
+  'RSA-OAEP-256',
+  'dir'
+]
+```
+<a id="enabled-jwa-id-token-encryption-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  // asymmetric RSAES based
+  'RSA-OAEP', 'RSA-OAEP-256', 'RSA-OAEP-384', 'RSA-OAEP-512',
+  // asymmetric ECDH-ES based
+  'ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW',
+  // symmetric AES key wrapping
+  'A128KW', 'A192KW', 'A256KW', 'A128GCMKW', 'A192GCMKW', 'A256GCMKW',
+  // direct encryption
+  'dir',
+]
+```
+</details>
+
+---
+
+### enabledJWA.idTokenEncryptionEncValues
+
+JWE "enc" Content Encryption Algorithm values the authorization server supports to encrypt ID Tokens with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'A128CBC-HS256',
+  'A128GCM',
+  'A256CBC-HS512',
+  'A256GCM'
+]
+```
+<a id="enabled-jwa-id-token-encryption-enc-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'A128CBC-HS256', 'A128GCM', 'A192CBC-HS384', 'A192GCM', 'A256CBC-HS512', 'A256GCM',
+]
+```
+</details>
+
+---
+
+### enabledJWA.idTokenSigningAlgValues
+
+JWS "alg" Algorithm values the authorization server supports to sign ID Tokens with. 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'RS256',
+  'PS256',
+  'ES256',
+  'Ed25519',
+  'EdDSA'
+]
+```
+<a id="enabled-jwa-id-token-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'RS256', 'RS384', 'RS512',
+  'PS256', 'PS384', 'PS512',
+  'ES256', 'ES384', 'ES512',
+  'Ed25519', 'EdDSA',
+  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
+  'HS256', 'HS384', 'HS512',
+]
+```
+</details>
+
+---
+
+### enabledJWA.introspectionEncryptionAlgValues
+
+JWE "alg" Algorithm values the authorization server supports for JWT Introspection response encryption 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'A128KW',
+  'A256KW',
+  'ECDH-ES',
+  'RSA-OAEP',
+  'RSA-OAEP-256',
+  'dir'
+]
+```
+<a id="enabled-jwa-introspection-encryption-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  // asymmetric RSAES based
+  'RSA-OAEP', 'RSA-OAEP-256', 'RSA-OAEP-384', 'RSA-OAEP-512',
+  // asymmetric ECDH-ES based
+  'ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW',
+  // symmetric AES key wrapping
+  'A128KW', 'A192KW', 'A256KW', 'A128GCMKW', 'A192GCMKW', 'A256GCMKW',
+  // direct encryption
+  'dir',
+]
+```
+</details>
+
+---
+
+### enabledJWA.introspectionEncryptionEncValues
+
+JWE "enc" Content Encryption Algorithm values the authorization server supports to encrypt JWT Introspection responses with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'A128CBC-HS256',
+  'A128GCM',
+  'A256CBC-HS512',
+  'A256GCM'
+]
+```
+<a id="enabled-jwa-introspection-encryption-enc-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'A128CBC-HS256', 'A128GCM', 'A192CBC-HS384', 'A192GCM', 'A256CBC-HS512', 'A256GCM',
+]
+```
+</details>
+
+---
+
+### enabledJWA.introspectionSigningAlgValues
+
+JWS "alg" Algorithm values the authorization server supports to sign JWT Introspection responses with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'RS256',
+  'PS256',
+  'ES256',
+  'Ed25519',
+  'EdDSA'
+]
+```
+<a id="enabled-jwa-introspection-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'RS256', 'RS384', 'RS512',
+  'PS256', 'PS384', 'PS512',
+  'ES256', 'ES384', 'ES512',
+  'Ed25519', 'EdDSA',
+  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
+  'HS256', 'HS384', 'HS512',
+]
+```
+</details>
+
+---
+
+### enabledJWA.requestObjectEncryptionAlgValues
+
+JWE "alg" Algorithm values the authorization server supports to receive encrypted Request Objects (`JAR`) with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'A128KW',
+  'A256KW',
+  'ECDH-ES',
+  'RSA-OAEP',
+  'RSA-OAEP-256',
+  'dir'
+]
+```
+<a id="enabled-jwa-request-object-encryption-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  // asymmetric RSAES based
+  'RSA-OAEP', 'RSA-OAEP-256', 'RSA-OAEP-384', 'RSA-OAEP-512',
+  // asymmetric ECDH-ES based
+  'ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW',
+  // symmetric AES key wrapping
+  'A128KW', 'A192KW', 'A256KW', 'A128GCMKW', 'A192GCMKW', 'A256GCMKW',
+  // direct encryption
+  'dir',
+]
+```
+</details>
+
+---
+
+### enabledJWA.requestObjectEncryptionEncValues
+
+JWE "enc" Content Encryption Algorithm values the authorization server supports to decrypt Request Objects (`JAR`) with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'A128CBC-HS256',
+  'A128GCM',
+  'A256CBC-HS512',
+  'A256GCM'
+]
+```
+<a id="enabled-jwa-request-object-encryption-enc-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'A128CBC-HS256', 'A128GCM', 'A192CBC-HS384', 'A192GCM', 'A256CBC-HS512', 'A256GCM',
+]
+```
+</details>
+
+---
+
+### enabledJWA.requestObjectSigningAlgValues
+
+JWS "alg" Algorithm values the authorization server supports to receive signed Request Objects (`JAR`) with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'HS256',
+  'RS256',
+  'PS256',
+  'ES256',
+  'Ed25519',
+  'EdDSA'
+]
+```
+<a id="enabled-jwa-request-object-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'RS256', 'RS384', 'RS512',
+  'PS256', 'PS384', 'PS512',
+  'ES256', 'ES384', 'ES512',
+  'Ed25519', 'EdDSA',
+  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
+  'HS256', 'HS384', 'HS512',
+]
+```
+</details>
+
+---
+
+### enabledJWA.userinfoEncryptionAlgValues
+
+JWE "alg" Algorithm values the authorization server supports for UserInfo Response encryption 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'A128KW',
+  'A256KW',
+  'ECDH-ES',
+  'RSA-OAEP',
+  'RSA-OAEP-256',
+  'dir'
+]
+```
+<a id="enabled-jwa-userinfo-encryption-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  // asymmetric RSAES based
+  'RSA-OAEP', 'RSA-OAEP-256', 'RSA-OAEP-384', 'RSA-OAEP-512',
+  // asymmetric ECDH-ES based
+  'ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW',
+  // symmetric AES key wrapping
+  'A128KW', 'A192KW', 'A256KW', 'A128GCMKW', 'A192GCMKW', 'A256GCMKW',
+  // direct encryption
+  'dir',
+]
+```
+</details>
+
+---
+
+### enabledJWA.userinfoEncryptionEncValues
+
+JWE "enc" Content Encryption Algorithm values the authorization server supports to encrypt UserInfo responses with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'A128CBC-HS256',
+  'A128GCM',
+  'A256CBC-HS512',
+  'A256GCM'
+]
+```
+<a id="enabled-jwa-userinfo-encryption-enc-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'A128CBC-HS256', 'A128GCM', 'A192CBC-HS384', 'A192GCM', 'A256CBC-HS512', 'A256GCM',
+]
+```
+</details>
+
+---
+
+### enabledJWA.userinfoSigningAlgValues
+
+JWS "alg" Algorithm values the authorization server supports to sign UserInfo responses with 
+
+  
+
+
+_**default value**_:
+```js
+[
+  'RS256',
+  'PS256',
+  'ES256',
+  'Ed25519',
+  'EdDSA'
+]
+```
+<a id="enabled-jwa-userinfo-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
+
+```js
+[
+  'RS256', 'RS384', 'RS512',
+  'PS256', 'PS384', 'PS512',
+  'ES256', 'ES384', 'ES512',
+  'Ed25519', 'EdDSA',
+  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
+  'HS256', 'HS384', 'HS512',
+]
+```
+</details>
+
+---
+
 ### enableHttpPostMethods
+
+HTTP POST Method Support  
 
 Specifies whether HTTP POST method support shall be enabled at the Authorization Endpoint and the Logout Endpoint (if enabled). When enabled, the authorization server shall accept POST requests at these endpoints in addition to the standard GET requests. This configuration may only be used when the `cookies.long.sameSite` configuration value is `none`.  
 
@@ -2659,6 +3548,8 @@ false
 ---
 
 ### expiresWithSession
+
+Session-Bound Token Expiration  
 
 Specifies a helper function that shall be invoked to determine whether authorization codes, device codes, or authorization-endpoint-returned opaque access tokens shall be bound to the end-user session. When session binding is enabled, this policy shall be applied to all opaque tokens issued from the authorization code, device code, or subsequent refresh token exchanges. When artifacts are session-bound, their originating session will be loaded by its unique identifier every time the artifacts are encountered. Session-bound artifacts shall be effectively revoked when the end-user logs out, providing automatic cleanup of token state upon session termination.  
 
@@ -2673,6 +3564,8 @@ async function expiresWithSession(ctx, code) {
 ---
 
 ### extraClientMetadata
+
+Custom Client Metadata Properties  
 
 Specifies the configuration for custom client metadata properties that shall be supported by the authorization server for client registration and metadata validation purposes. This configuration enables extension of standard OAuth 2.0 and OpenID Connect client metadata with deployment-specific properties. Existing standards-defined properties are snakeCased on a Client instance (e.g. `client.redirectUris`), while new properties defined by this configuration shall be available with their names verbatim (e.g. `client['urn:example:client:my-property']`).  
 
@@ -2713,10 +3606,16 @@ function extraClientMetadataValidator(ctx, key, value, metadata) {
 
 ### extraParams
 
-Specifies additional parameters that shall be recognized by the authorization, device authorization, backchannel authentication, and pushed authorization request endpoints. These extended parameters become available in `ctx.oidc.params` and are passed to interaction session details for processing.   
- This configuration accepts either an iterable object (array or Set of strings) for simple parameter registration, or a plain object with string properties representing parameter names and values being validation functions (synchronous or asynchronous) for the corresponding parameter values.   
- Parameter validators are executed regardless of the parameter's presence or value, enabling validation of parameter presence as well as assignment of default values. When the value is `null` or `undefined`, the parameter is registered without validation constraints.   
- Note: These validators execute during the final phase of the request validation process. Modifications to other parameters (such as assigning default values) will not trigger re-validation of the entire request.   
+Additional Authorization Request Parameters  
+
+Specifies additional parameters that shall be recognized by the authorization, device authorization, backchannel authentication, and pushed authorization request endpoints. These extended parameters become available in `ctx.oidc.params` and are passed to interaction session details for processing. 
+
+This configuration accepts either an iterable object (array or Set of strings) for simple parameter registration, or a plain object with string properties representing parameter names and values being validation functions (synchronous or asynchronous) for the corresponding parameter values. 
+
+Parameter validators are executed regardless of the parameter's presence or value, enabling validation of parameter presence as well as assignment of default values. When the value is `null` or `undefined`, the parameter is registered without validation constraints. 
+
+Note: These validators execute during the final phase of the request validation process. Modifications to other parameters (such as assigning default values) will not trigger re-validation of the entire request. 
+
   
 
 
@@ -2754,7 +3653,10 @@ const extraParams = {
 
 ### extraTokenClaims
 
-Specifies a helper function that shall be invoked to add additional claims to Access Tokens during the token issuance process. For opaque Access Tokens, the returned claims shall be stored in the authorization server storage under the `extra` property and shall be returned by the introspection endpoint as top-level claims. For JWT-formatted Access Tokens, the returned claims shall be included as top-level claims within the JWT payload. Claims returned by this function will not overwrite pre-existing top-level claims in the token.   
+Additional Access Token Claims  
+
+Specifies a helper function that shall be invoked to add additional claims to Access Tokens during the token issuance process. For opaque Access Tokens, the returned claims shall be stored in the authorization server storage under the `extra` property and shall be returned by the introspection endpoint as top-level claims. For JWT-formatted Access Tokens, the returned claims shall be included as top-level claims within the JWT payload. Claims returned by this function will not overwrite pre-existing top-level claims in the token. 
+
   
 
 
@@ -2781,41 +3683,45 @@ async function extraTokenClaims(ctx, token) {
 
 ### fetch
 
-Specifies a function that shall be invoked whenever the authorization server needs to make calls to external HTTPS resources. The interface and expected return value shall conform to the [Fetch API specification](https://fetch.spec.whatwg.org/) [`fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch) standard. The default implementation uses a timeout of 2500ms and does not send a user-agent header.   
-  
+Fetching External Resources  
+
+Specifies a function that shall be invoked whenever the authorization server needs to make calls to external HTTPS resources. The interface and expected return value shall conform to the [Fetch API specification](https://fetch.spec.whatwg.org/) [`fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch) standard. 
+
+Before each invocation the authorization server sets the following fetch options:
+- `signal` to `AbortSignal.timeout(2500)`
+- `headers` to a new `Headers` instance with the `user-agent` header set to an empty string in order to remove the default one
+- `dispatcher` to a custom `undici.Agent` that rejects connections to private, loopback, and other non-globally-routable IP addresses, preventing Server-Side Request Forgery (SSRF)  
 
 
 _**default value**_:
 ```js
-function fetch(url, options) {
-  options.signal = AbortSignal.timeout(2500);
-  options.headers = new Headers(options.headers);
-  options.headers.set('user-agent', ''); // removes the user-agent header in Node's global fetch()
- 
-  return globalThis.fetch(url, options);
+(url, options) => globalThis.fetch(url, options)
+```
+
+---
+
+### fetchResponseBodyLimits
+
+Fetch Response Body Size Limits  
+
+Specifies per-purpose maximum response body size limits (in bytes) for external HTTPS resource fetches. When a limit is defined for a given purpose, the authorization server will bail out early on `Content-Length` header values exceeding the limit and will also abort reading the response body when the accumulated size exceeds the limit. Purposes with a limit of `Infinity` will not enforce any size restriction.  
+
+
+_**default value**_:
+```js
+{
+  'client_id metadata document': 5120,
+  jwks_uri: Infinity,
+  sector_identifier_uri: Infinity
 }
 ```
-<a id="fetch-to-change-the-request's-timeout"></a><details><summary>Example: (Click to expand) To change the request's timeout.</summary><br>
-
-
-To change all request's timeout configure the fetch as a function like so:
-  
-
-```js
- {
-   fetch(url, options) {
-     options.signal = AbortSignal.timeout(5000);
-     return globalThis.fetch(url, options);
-   }
- }
-```
-</details>
 
 ---
 
 ### formats.bitsOfOpaqueRandomness
 
-Specifies the entropy configuration for opaque token generation. The value shall be an integer (or a function returning an integer) that determines the cryptographic strength of generated opaque tokens. The resulting opaque token length shall be calculated as `Math.ceil(i / Math.log2(n))` where `i` is the specified bit count and `n` is the number of symbols in the encoding alphabet (64 characters in the base64url character set used by this implementation).   
+Specifies the entropy configuration for opaque token generation. The value shall be an integer (or a function returning an integer) that determines the cryptographic strength of generated opaque tokens. The resulting opaque token length shall be calculated as `Math.ceil(i / Math.log2(n))` where `i` is the specified bit count and `n` is the number of symbols in the encoding alphabet (64 characters in the base64url character set used by this implementation). 
+
   
 
 
@@ -2839,7 +3745,8 @@ function bitsOfOpaqueRandomness(ctx, token) {
 
 ### formats.customizers
 
-Specifies customizer functions that shall be invoked immediately before issuing structured Access Tokens to enable modification of token headers and payload claims according to authorization server policy. These functions shall be called during the token formatting process to apply deployment-specific customizations to the token structure before signing.   
+Specifies customizer functions that shall be invoked immediately before issuing structured Access Tokens to enable modification of token headers and payload claims according to authorization server policy. These functions shall be called during the token formatting process to apply deployment-specific customizations to the token structure before signing. 
+
   
 
 
@@ -2849,7 +3756,7 @@ _**default value**_:
   jwt: undefined
 }
 ```
-<a id="formats-customizers-to-push-additional-headers-and-payload-claims-to-a-jwt-format-access-token"></a><details><summary>Example: (Click to expand) To push additional headers and payload claims to a `jwt` format Access Token.</summary><br>
+<a id="formats-customizers-to-add-additional-headers-and-payload-claims-to-a-jwt-format-access-token"></a><details><summary>Example: (Click to expand) To add additional headers and payload claims to a `jwt` format Access Token.</summary><br>
 
 ```js
 {
@@ -2865,17 +3772,10 @@ _**default value**_:
 
 ---
 
-### interactions
-
-Specifies the configuration for interaction policy and end-user redirection that shall be applied to determine that user interaction is required during the authorization process. This configuration enables customization of authentication and consent flows according to deployment-specific requirements.   
-  
-
-
----
-
 ### interactions.policy
 
-Specifies the structure of Prompts and their associated checks that shall be applied during authorization request processing. The policy is formed by Prompt and Check class instances that define the conditions under which user interaction is required. The default policy implementation provides a fresh instance that can be customized, and the relevant classes are exported for configuration purposes.   
+Specifies the structure of Prompts and their associated checks that shall be applied during authorization request processing. The policy is formed by Prompt and Check class instances that define the conditions under which user interaction is required. The default policy implementation provides a fresh instance that can be customized, and the relevant classes are exported for configuration purposes. 
+
   
 
 
@@ -3140,26 +4040,26 @@ new Prompt(
 <a id="interactions-policy-default-interaction-policy-description"></a><details><summary>Example: (Click to expand) default interaction policy description.</summary><br>
 
 
-The default interaction policy consists of two available prompts, login and consent <br/><br/>
- - `login` does the following checks:
- - no_session - checks that there's an established session, an authenticated end-user
- - max_age - processes the max_age parameter (when the session's auth_time is too old it requires login)
- - id_token_hint - processes the id_token_hint parameter (when the end-user sub differs it requires login)
- - claims_id_token_sub_value - processes the claims parameter `sub` (when the `claims` parameter requested sub differs it requires login)
- - essential_acrs - processes the claims parameter `acr` (when the current acr is not amongst the `claims` parameter essential `acr.values` it requires login)
- - essential_acr - processes the claims parameter `acr` (when the current acr is not equal to the `claims` parameter essential `acr.value` it requires login) <br/><br/>
- - `consent` does the following checks:
- - native_client_prompt - native clients always require re-consent
- - op_scopes_missing - requires consent when the requested scope includes scope values previously not requested
- - op_claims_missing - requires consent when the requested claims parameter includes claims previously not requested
- - rs_scopes_missing - requires consent when the requested resource indicated scope values include scopes previously not requested <br/><br/> These checks are the best practice for various privacy and security reasons.  
+The default interaction policy consists of two available prompts, login and consent
+- `login` does the following checks:
+  - no_session - checks that there's an established session, an authenticated end-user
+  - max_age - processes the max_age parameter (when the session's auth_time is too old it requires login)
+  - id_token_hint - processes the id_token_hint parameter (when the end-user sub differs it requires login)
+  - claims_id_token_sub_value - processes the claims parameter `sub` (when the `claims` parameter requested sub differs it requires login)
+  - essential_acrs - processes the claims parameter `acr` (when the current acr is not amongst the `claims` parameter essential `acr.values` it requires login)
+  - essential_acr - processes the claims parameter `acr` (when the current acr is not equal to the `claims` parameter essential `acr.value` it requires login)
+- `consent` does the following checks:
+  - native_client_prompt - native clients always require re-consent
+  - op_scopes_missing - requires consent when the requested scope includes scope values previously not requested
+  - op_claims_missing - requires consent when the requested claims parameter includes claims previously not requested
+  - rs_scopes_missing - requires consent when the requested resource indicated scope values include scopes previously not requested These checks are the best practice for various privacy and security reasons.  
 
 
 </details>
 <a id="interactions-policy-disabling-default-consent-checks"></a><details><summary>Example: (Click to expand) disabling default consent checks.</summary><br>
 
 
-You may be required to skip (silently accept) some of the consent checks, while it is discouraged there are valid reasons to do that, for instance in some first-party scenarios or going with pre-existing, previously granted, consents. To simply silenty "accept" first-party/resource indicated scopes or pre-agreed-upon claims use the `loadExistingGrant` configuration helper function, in there you may just instantiate (and save!) a grant for the current clientId and accountId values.  
+You may be required to skip (silently accept) some of the consent checks, while it is discouraged there are valid reasons to do that, for instance in some first-party scenarios or going with pre-existing, previously granted, consents. To simply silently "accept" first-party/resource indicated scopes or pre-agreed-upon claims use the `loadExistingGrant` configuration helper function, in there you may just instantiate (and save!) a grant for the current clientId and accountId values.  
 
 
 </details>
@@ -3196,7 +4096,10 @@ async function interactionsUrl(ctx, interaction) {
 
 ### issueRefreshToken
 
-Specifies a helper function that shall be invoked to determine whether a refresh token shall be issued during token endpoint operations. This function enables policy-based control over refresh token issuance according to authorization server requirements, client capabilities, and granted scope values.   
+Refresh Token Issuance Policy  
+
+Specifies a helper function that shall be invoked to determine whether a refresh token shall be issued during token endpoint operations. This function enables policy-based control over refresh token issuance according to authorization server requirements, client capabilities, and granted scope values. 
+
   
 
 
@@ -3229,6 +4132,8 @@ async issueRefreshToken(ctx, client, code) {
 
 ### loadExistingGrant
 
+Loading Existing Grants  
+
 Helper function invoked to load existing authorization grants that may be used to resolve an Authorization Request without requiring additional end-user interaction. The default implementation attempts to load grants based on the interaction result's `consent.grantId` property, falling back to the existing grantId for the requesting client in the current session.  
 
 
@@ -3248,7 +4153,10 @@ async function loadExistingGrant(ctx) {
 
 ### pairwiseIdentifier
 
-Specifies a helper function that shall be invoked to generate pairwise subject identifier values for ID Tokens and UserInfo responses, as specified in OpenID Connect Core 1.0. This function enables privacy-preserving subject identifier generation that provides unique identifiers per client while maintaining consistent identification for the same end-user across requests to the same client.   
+Pairwise Subject Identifier Generation  
+
+Specifies a helper function that shall be invoked to generate pairwise subject identifier values for ID Tokens and UserInfo responses, as specified in OpenID Connect Core 1.0. This function enables privacy-preserving subject identifier generation that provides unique identifiers per client while maintaining consistent identification for the same end-user across requests to the same client. 
+
   
 
 _**recommendation**_: Implementations should employ memoization or caching mechanisms when this function may be invoked multiple times with identical arguments within a single request.  
@@ -3263,21 +4171,11 @@ async function pairwiseIdentifier(ctx, accountId, client) {
 
 ---
 
-### pkce
-
-[`RFC7636`](https://www.rfc-editor.org/rfc/rfc7636.html) - Proof Key for Code Exchange (`PKCE`)  
-
-`PKCE` configuration such as policy check on the required use of `PKCE`.   
-  
-
-
----
-
 ### pkce.required
 
 Configures if and when the authorization server requires clients to use `PKCE`. This helper is called whenever an authorization request lacks the code_challenge parameter. Return:
- - `false` to allow the request to continue without `PKCE`
- - `true` to abort the request  
+- `false` to allow the request to continue without `PKCE`
+- `true` to abort the request  
 
 
 _**default value**_:
@@ -3310,6 +4208,8 @@ function pkceRequired(ctx, client) {
 
 ### renderError
 
+Error Response Rendering  
+
 Specifies a function that shall be invoked to present error responses to the User-Agent during authorization server operations. This function enables customization of error presentation according to deployment-specific user interface requirements.  
 
 
@@ -3337,7 +4237,10 @@ async function renderError(ctx, out, error) {
 
 ### responseTypes
 
-Specifies the response_type values supported by this authorization server. In accordance with RFC 9700 (OAuth 2.0 Security Best Current Practice), the default configuration excludes response types that result in access tokens being issued directly by the authorization endpoint.   
+Supported response_type Values  
+
+Specifies the response_type values supported by this authorization server. In accordance with RFC 9700 (OAuth 2.0 Security Best Current Practice), the default configuration excludes response types that result in access tokens being issued directly by the authorization endpoint. 
+
   
 
 
@@ -3370,14 +4273,16 @@ These are values defined in [`OIDC Core 1.0`](https://openid.net/specs/openid-co
 
 ### revokeGrantPolicy
 
+Grant Revocation Policy  
+
 Specifies a helper function that shall be invoked to determine whether an underlying Grant entry shall be revoked in addition to the specific token or code being processed. This function enables enforcement of grant revocation policies according to authorization server security requirements. The function is invoked in the following contexts:
- - RP-Initiated Logout
- - Opaque Access Token Revocation
- - Refresh Token Revocation
- - Authorization Code re-use
- - Device Code re-use
- - Backchannel Authentication Request re-use
- - Rotated Refresh Token re-use  
+- RP-Initiated Logout
+- Opaque Access Token Revocation
+- Refresh Token Revocation
+- Authorization Code re-use
+- Device Code re-use
+- Backchannel Authentication Request re-use
+- Rotated Refresh Token re-use  
 
 
 _**default value**_:
@@ -3394,15 +4299,17 @@ function revokeGrantPolicy(ctx) {
 
 ### rotateRefreshToken
 
+Refresh Token Rotation Policy  
+
 Specifies the refresh token rotation policy that shall be applied by the authorization server when refresh tokens are used. This configuration determines whether and under what conditions refresh tokens shall be rotated. Supported values include:
- - `false` - refresh tokens shall not be rotated and their initial expiration date is final
- - `true` - refresh tokens shall be rotated when used, with the current token marked as consumed and a new one issued with new TTL; when a consumed refresh token is encountered an error shall be returned and the whole token chain (grant) is revoked
- - `function` - a function returning true/false that shall be invoked to determine whether rotation should occur based on request context and authorization server policy   
- <br/><br/>   
- The default configuration value implements a sensible refresh token rotation policy that:
- - only allows refresh tokens to be rotated (have their TTL prolonged by issuing a new one) for one year
- - otherwise always rotates public client tokens that are not sender-constrained
- - otherwise only rotates tokens if they're being used close to their expiration (>= 70% TTL passed)  
+- `false` - refresh tokens shall not be rotated and their initial expiration date is final
+- `true` - refresh tokens shall be rotated when used, with the current token marked as consumed and a new one issued with new TTL; when a consumed refresh token is encountered an error shall be returned and the whole token chain (grant) is revoked
+- `function` - a function returning true/false that shall be invoked to determine whether rotation should occur based on request context and authorization server policy 
+
+The default configuration value implements a sensible refresh token rotation policy that:
+- only allows refresh tokens to be rotated (have their TTL prolonged by issuing a new one) for one year
+- otherwise always rotates public client tokens that are not sender-constrained
+- otherwise only rotates tokens if they're being used close to their expiration (>= 70% TTL passed)  
 
 
 _**default value**_:
@@ -3430,6 +4337,8 @@ function rotateRefreshToken(ctx) {
 
 ### routes
 
+Endpoint URL Paths  
+
 Defines the URL path mappings for authorization server endpoints. All route values are relative and shall begin with a forward slash ("/") character.  
 
 
@@ -3456,6 +4365,8 @@ _**default value**_:
 
 ### scopes
 
+Supported OAuth 2.0 Scope Values  
+
 Specifies additional OAuth 2.0 scope values that this authorization server shall support and advertise in its discovery document. Resource Server-specific scopes shall be configured via the `features.resourceIndicators` mechanism.  
 
 
@@ -3470,6 +4381,8 @@ _**default value**_:
 ---
 
 ### sectorIdentifierUriValidate
+
+Sector Identifier URI Validation  
 
 Specifies a function that shall be invoked to determine whether the sectorIdentifierUri of a client being loaded, registered, or updated should be fetched and its contents validated against the client metadata.  
 
@@ -3486,9 +4399,11 @@ function sectorIdentifierUriValidate(client) {
 
 ### subjectTypes
 
+Subject Identifier Types  
+
 Specifies the array of Subject Identifier types that this authorization server shall support for end-user identification purposes. When only `pairwise` is supported, it shall become the default `subject_type` client metadata value. Supported identifier types shall include:
- - `public` - provides the same subject identifier value to all clients
- - `pairwise` - provides a unique subject identifier value per client to enhance privacy  
+- `public` - provides the same subject identifier value to all clients
+- `pairwise` - provides a unique subject identifier value per client to enhance privacy  
 
 
 _**default value**_:
@@ -3497,639 +4412,6 @@ _**default value**_:
   'public'
 ]
 ```
-
----
-
-### ttl
-
-Specifies the Time-To-Live (TTL) values that shall be applied to various artifacts within the authorization server. TTL values may be specified as either a numeric value (in seconds) or a synchronous function that returns a numeric value based on the current request context and authorization server policy.   
-  
-
-_**recommendation**_: Token TTL values should be set to the minimum duration necessary for the intended use case to minimize security exposure.  
-
-_**recommendation**_: For refresh tokens requiring extended lifetimes, consider utilizing the `rotateRefreshToken` configuration option, which extends effective token lifetime through rotation rather than extended initial TTL values.  
-
-
-_**default value**_:
-```js
-{
-  AccessToken: function AccessTokenTTL(ctx, token, client) {
-    return token.resourceServer?.accessTokenTTL || 60 * 60; // 1 hour in seconds
-  },
-  AuthorizationCode: 60 /* 1 minute in seconds */,
-  BackchannelAuthenticationRequest: function BackchannelAuthenticationRequestTTL(ctx, request, client) {
-    if (ctx?.oidc?.params.requested_expiry) {
-      return Math.min(10 * 60, +ctx.oidc.params.requested_expiry); // 10 minutes in seconds or requested_expiry, whichever is shorter
-    }
-  
-    return 10 * 60; // 10 minutes in seconds
-  },
-  ClientCredentials: function ClientCredentialsTTL(ctx, token, client) {
-    return token.resourceServer?.accessTokenTTL || 10 * 60; // 10 minutes in seconds
-  },
-  DeviceCode: 600 /* 10 minutes in seconds */,
-  Grant: 1209600 /* 14 days in seconds */,
-  IdToken: 3600 /* 1 hour in seconds */,
-  Interaction: 3600 /* 1 hour in seconds */,
-  RefreshToken: function RefreshTokenTTL(ctx, token, client) {
-    if (
-      ctx?.oidc?.entities.RotatedRefreshToken
-      && client.applicationType === 'web'
-      && client.clientAuthMethod === 'none'
-      && !token.isSenderConstrained()
-    ) {
-      // Non-Sender Constrained SPA RefreshTokens do not have infinite expiration through rotation
-      return ctx.oidc.entities.RotatedRefreshToken.remainingTTL;
-    }
-  
-    return 14 * 24 * 60 * 60; // 14 days in seconds
-  },
-  Session: 1209600 /* 14 days in seconds */
-}
-```
-<a id="ttl-to-resolve-a-ttl-on-runtime-for-each-new-token"></a><details><summary>Example: (Click to expand) To resolve a ttl on runtime for each new token.</summary><br>
-
-
-Configure `ttl` for a given token type with a function like so, this must return a value, not a Promise.
-  
-
-```js
-{
-  ttl: {
-    AccessToken(ctx, token, client) {
-      // return a Number (in seconds) for the given token (first argument), the associated client is
-      // passed as a second argument
-      // Tip: if the values are entirely client based memoize the results
-      return resolveTTLfor(token, client);
-    },
-  },
-}
-```
-</details>
-
----
-
-### enabledJWA
-
-Specifies the JSON Web Algorithm (JWA) values supported by this authorization server for various cryptographic operations, as defined in RFC 7518 and related specifications.  
-
-
----
-
-### enabledJWA.attestSigningAlgValues
-
-JWS "alg" Algorithm values the authorization server supports to verify signed Client Attestation and Client Attestation PoP JWTs with   
-  
-
-
-_**default value**_:
-```js
-[
-  'ES256',
-  'Ed25519',
-  'EdDSA'
-]
-```
-<a id="enabled-jwa-attest-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'RS256', 'RS384', 'RS512',
-  'PS256', 'PS384', 'PS512',
-  'ES256', 'ES384', 'ES512',
-  'Ed25519', 'EdDSA',
-  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
-]
-```
-</details>
-
----
-
-### enabledJWA.authorizationEncryptionAlgValues
-
-JWE "alg" Algorithm values the authorization server supports for JWT Authorization response (`JARM`) encryption   
-  
-
-
-_**default value**_:
-```js
-[
-  'A128KW',
-  'A256KW',
-  'ECDH-ES',
-  'RSA-OAEP',
-  'RSA-OAEP-256',
-  'dir'
-]
-```
-<a id="enabled-jwa-authorization-encryption-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  // asymmetric RSAES based
-  'RSA-OAEP', 'RSA-OAEP-256', 'RSA-OAEP-384', 'RSA-OAEP-512',
-  // asymmetric ECDH-ES based
-  'ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW',
-  // symmetric AES key wrapping
-  'A128KW', 'A192KW', 'A256KW', 'A128GCMKW', 'A192GCMKW', 'A256GCMKW',
-  // direct encryption
-  'dir',
-]
-```
-</details>
-
----
-
-### enabledJWA.authorizationEncryptionEncValues
-
-JWE "enc" Content Encryption Algorithm values the authorization server supports to encrypt JWT Authorization Responses (`JARM`) with   
-  
-
-
-_**default value**_:
-```js
-[
-  'A128CBC-HS256',
-  'A128GCM',
-  'A256CBC-HS512',
-  'A256GCM'
-]
-```
-<a id="enabled-jwa-authorization-encryption-enc-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'A128CBC-HS256', 'A128GCM', 'A192CBC-HS384', 'A192GCM', 'A256CBC-HS512', 'A256GCM',
-]
-```
-</details>
-
----
-
-### enabledJWA.authorizationSigningAlgValues
-
-JWS "alg" Algorithm values the authorization server supports to sign JWT Authorization Responses (`JARM`) with   
-  
-
-
-_**default value**_:
-```js
-[
-  'RS256',
-  'PS256',
-  'ES256',
-  'Ed25519',
-  'EdDSA'
-]
-```
-<a id="enabled-jwa-authorization-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'RS256', 'RS384', 'RS512',
-  'PS256', 'PS384', 'PS512',
-  'ES256', 'ES384', 'ES512',
-  'Ed25519', 'EdDSA',
-  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
-  'HS256', 'HS384', 'HS512',
-]
-```
-</details>
-
----
-
-### enabledJWA.clientAuthSigningAlgValues
-
-JWS "alg" Algorithm values the authorization server supports for signed JWT Client Authentication (`private_key_jwt` and `client_secret_jwt`)   
-  
-
-
-_**default value**_:
-```js
-[
-  'HS256',
-  'RS256',
-  'PS256',
-  'ES256',
-  'Ed25519',
-  'EdDSA'
-]
-```
-<a id="enabled-jwa-client-auth-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'RS256', 'RS384', 'RS512',
-  'PS256', 'PS384', 'PS512',
-  'ES256', 'ES384', 'ES512',
-  'Ed25519', 'EdDSA',
-  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
-  'HS256', 'HS384', 'HS512',
-]
-```
-</details>
-
----
-
-### enabledJWA.dPoPSigningAlgValues
-
-JWS "alg" Algorithm values the authorization server supports to verify signed DPoP proof JWTs with   
-  
-
-
-_**default value**_:
-```js
-[
-  'ES256',
-  'Ed25519',
-  'EdDSA'
-]
-```
-<a id="enabled-jwa-d-po-p-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'RS256', 'RS384', 'RS512',
-  'PS256', 'PS384', 'PS512',
-  'ES256', 'ES384', 'ES512',
-  'Ed25519', 'EdDSA',
-  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
-]
-```
-</details>
-
----
-
-### enabledJWA.idTokenEncryptionAlgValues
-
-JWE "alg" Algorithm values the authorization server supports for ID Token encryption   
-  
-
-
-_**default value**_:
-```js
-[
-  'A128KW',
-  'A256KW',
-  'ECDH-ES',
-  'RSA-OAEP',
-  'RSA-OAEP-256',
-  'dir'
-]
-```
-<a id="enabled-jwa-id-token-encryption-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  // asymmetric RSAES based
-  'RSA-OAEP', 'RSA-OAEP-256', 'RSA-OAEP-384', 'RSA-OAEP-512',
-  // asymmetric ECDH-ES based
-  'ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW',
-  // symmetric AES key wrapping
-  'A128KW', 'A192KW', 'A256KW', 'A128GCMKW', 'A192GCMKW', 'A256GCMKW',
-  // direct encryption
-  'dir',
-]
-```
-</details>
-
----
-
-### enabledJWA.idTokenEncryptionEncValues
-
-JWE "enc" Content Encryption Algorithm values the authorization server supports to encrypt ID Tokens with   
-  
-
-
-_**default value**_:
-```js
-[
-  'A128CBC-HS256',
-  'A128GCM',
-  'A256CBC-HS512',
-  'A256GCM'
-]
-```
-<a id="enabled-jwa-id-token-encryption-enc-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'A128CBC-HS256', 'A128GCM', 'A192CBC-HS384', 'A192GCM', 'A256CBC-HS512', 'A256GCM',
-]
-```
-</details>
-
----
-
-### enabledJWA.idTokenSigningAlgValues
-
-JWS "alg" Algorithm values the authorization server supports to sign ID Tokens with.   
-  
-
-
-_**default value**_:
-```js
-[
-  'RS256',
-  'PS256',
-  'ES256',
-  'Ed25519',
-  'EdDSA'
-]
-```
-<a id="enabled-jwa-id-token-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'RS256', 'RS384', 'RS512',
-  'PS256', 'PS384', 'PS512',
-  'ES256', 'ES384', 'ES512',
-  'Ed25519', 'EdDSA',
-  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
-  'HS256', 'HS384', 'HS512',
-]
-```
-</details>
-
----
-
-### enabledJWA.introspectionEncryptionAlgValues
-
-JWE "alg" Algorithm values the authorization server supports for JWT Introspection response encryption   
-  
-
-
-_**default value**_:
-```js
-[
-  'A128KW',
-  'A256KW',
-  'ECDH-ES',
-  'RSA-OAEP',
-  'RSA-OAEP-256',
-  'dir'
-]
-```
-<a id="enabled-jwa-introspection-encryption-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  // asymmetric RSAES based
-  'RSA-OAEP', 'RSA-OAEP-256', 'RSA-OAEP-384', 'RSA-OAEP-512',
-  // asymmetric ECDH-ES based
-  'ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW',
-  // symmetric AES key wrapping
-  'A128KW', 'A192KW', 'A256KW', 'A128GCMKW', 'A192GCMKW', 'A256GCMKW',
-  // direct encryption
-  'dir',
-]
-```
-</details>
-
----
-
-### enabledJWA.introspectionEncryptionEncValues
-
-JWE "enc" Content Encryption Algorithm values the authorization server supports to encrypt JWT Introspection responses with   
-  
-
-
-_**default value**_:
-```js
-[
-  'A128CBC-HS256',
-  'A128GCM',
-  'A256CBC-HS512',
-  'A256GCM'
-]
-```
-<a id="enabled-jwa-introspection-encryption-enc-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'A128CBC-HS256', 'A128GCM', 'A192CBC-HS384', 'A192GCM', 'A256CBC-HS512', 'A256GCM',
-]
-```
-</details>
-
----
-
-### enabledJWA.introspectionSigningAlgValues
-
-JWS "alg" Algorithm values the authorization server supports to sign JWT Introspection responses with   
-  
-
-
-_**default value**_:
-```js
-[
-  'RS256',
-  'PS256',
-  'ES256',
-  'Ed25519',
-  'EdDSA'
-]
-```
-<a id="enabled-jwa-introspection-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'RS256', 'RS384', 'RS512',
-  'PS256', 'PS384', 'PS512',
-  'ES256', 'ES384', 'ES512',
-  'Ed25519', 'EdDSA',
-  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
-  'HS256', 'HS384', 'HS512',
-]
-```
-</details>
-
----
-
-### enabledJWA.requestObjectEncryptionAlgValues
-
-JWE "alg" Algorithm values the authorization server supports to receive encrypted Request Objects (`JAR`) with   
-  
-
-
-_**default value**_:
-```js
-[
-  'A128KW',
-  'A256KW',
-  'ECDH-ES',
-  'RSA-OAEP',
-  'RSA-OAEP-256',
-  'dir'
-]
-```
-<a id="enabled-jwa-request-object-encryption-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  // asymmetric RSAES based
-  'RSA-OAEP', 'RSA-OAEP-256', 'RSA-OAEP-384', 'RSA-OAEP-512',
-  // asymmetric ECDH-ES based
-  'ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW',
-  // symmetric AES key wrapping
-  'A128KW', 'A192KW', 'A256KW', 'A128GCMKW', 'A192GCMKW', 'A256GCMKW',
-  // direct encryption
-  'dir',
-]
-```
-</details>
-
----
-
-### enabledJWA.requestObjectEncryptionEncValues
-
-JWE "enc" Content Encryption Algorithm values the authorization server supports to decrypt Request Objects (`JAR`) with   
-  
-
-
-_**default value**_:
-```js
-[
-  'A128CBC-HS256',
-  'A128GCM',
-  'A256CBC-HS512',
-  'A256GCM'
-]
-```
-<a id="enabled-jwa-request-object-encryption-enc-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'A128CBC-HS256', 'A128GCM', 'A192CBC-HS384', 'A192GCM', 'A256CBC-HS512', 'A256GCM',
-]
-```
-</details>
-
----
-
-### enabledJWA.requestObjectSigningAlgValues
-
-JWS "alg" Algorithm values the authorization server supports to receive signed Request Objects (`JAR`) with   
-  
-
-
-_**default value**_:
-```js
-[
-  'HS256',
-  'RS256',
-  'PS256',
-  'ES256',
-  'Ed25519',
-  'EdDSA'
-]
-```
-<a id="enabled-jwa-request-object-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'RS256', 'RS384', 'RS512',
-  'PS256', 'PS384', 'PS512',
-  'ES256', 'ES384', 'ES512',
-  'Ed25519', 'EdDSA',
-  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
-  'HS256', 'HS384', 'HS512',
-]
-```
-</details>
-
----
-
-### enabledJWA.userinfoEncryptionAlgValues
-
-JWE "alg" Algorithm values the authorization server supports for UserInfo Response encryption   
-  
-
-
-_**default value**_:
-```js
-[
-  'A128KW',
-  'A256KW',
-  'ECDH-ES',
-  'RSA-OAEP',
-  'RSA-OAEP-256',
-  'dir'
-]
-```
-<a id="enabled-jwa-userinfo-encryption-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  // asymmetric RSAES based
-  'RSA-OAEP', 'RSA-OAEP-256', 'RSA-OAEP-384', 'RSA-OAEP-512',
-  // asymmetric ECDH-ES based
-  'ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW',
-  // symmetric AES key wrapping
-  'A128KW', 'A192KW', 'A256KW', 'A128GCMKW', 'A192GCMKW', 'A256GCMKW',
-  // direct encryption
-  'dir',
-]
-```
-</details>
-
----
-
-### enabledJWA.userinfoEncryptionEncValues
-
-JWE "enc" Content Encryption Algorithm values the authorization server supports to encrypt UserInfo responses with   
-  
-
-
-_**default value**_:
-```js
-[
-  'A128CBC-HS256',
-  'A128GCM',
-  'A256CBC-HS512',
-  'A256GCM'
-]
-```
-<a id="enabled-jwa-userinfo-encryption-enc-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'A128CBC-HS256', 'A128GCM', 'A192CBC-HS384', 'A192GCM', 'A256CBC-HS512', 'A256GCM',
-]
-```
-</details>
-
----
-
-### enabledJWA.userinfoSigningAlgValues
-
-JWS "alg" Algorithm values the authorization server supports to sign UserInfo responses with   
-  
-
-
-_**default value**_:
-```js
-[
-  'RS256',
-  'PS256',
-  'ES256',
-  'Ed25519',
-  'EdDSA'
-]
-```
-<a id="enabled-jwa-userinfo-signing-alg-values-supported-values-list"></a><details><summary>Example: (Click to expand) Supported values list.</summary><br>
-
-```js
-[
-  'RS256', 'RS384', 'RS512',
-  'PS256', 'PS384', 'PS512',
-  'ES256', 'ES384', 'ES512',
-  'Ed25519', 'EdDSA',
-  'ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87', // available in Node.js >= 24.7.0
-  'HS256', 'HS384', 'HS512',
-]
-```
-</details>
 <!-- END CONF OPTIONS -->
 
 ## FAQ
