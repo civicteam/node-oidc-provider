@@ -190,3 +190,18 @@ With only this flag set, the cookies will still be set by the auth server, and c
 
    **OAuth/OIDC Specification Compliance:**
    This is a cookie management enhancement that doesn't affect OAuth/OIDC protocol compliance. It's an implementation detail for proper session cleanup in multi-component authentication systems.
+
+8. Skip interaction/authentication session UID mismatch check in cookieless mode
+   In `lib/actions/authorization/resume.js`, the check that verifies the interaction session's UID matches the current authentication session's UID is bypassed when `cookies.enableCookielessFallback` is enabled.
+
+   **Problem Solved:**
+   In cookieless fallback mode, the authentication session may not reliably persist between the authorization request and the resume callback, since session continuity depends on cookies being sent (which is not guaranteed in this mode). When the session doesn't carry over, a new session with a different UID is created, causing a spurious "interaction session and authentication session mismatch" error.
+
+   **Why the bypass is safe:**
+   - In cookieless mode, the interaction is already protected by the interaction ID (a nanoid that must be brute-forced), which is the primary security boundary.
+   - The subsequent account ID mismatch check (lines 71-89) still provides protection: if the resuming user's account doesn't match the interaction's login result, a logout flow is triggered.
+   - The session UID check is unreliable in cookieless mode — it works most of the time (when cookies happen to be sent) but fails intermittently, making it an inconsistent security control.
+
+   **Security Considerations:**
+   - In cookie mode, this check is unaffected and continues to protect against session fixation/confusion.
+   - In cookieless mode, the trade-off is consistent with the existing cookieless fallback design: interaction ID secrecy replaces cookie-based session binding as the trust anchor.
