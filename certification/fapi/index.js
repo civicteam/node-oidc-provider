@@ -23,7 +23,7 @@ const pkg = JSON.parse(
 );
 
 const __dirname = dirname(import.meta.url);
-const selfsigned = generate();
+const selfsigned = await generate();
 const { PORT = 3000, ISSUER = `http://localhost:${PORT}` } = process.env;
 
 const ALGS = ['PS256'];
@@ -392,6 +392,12 @@ const fapi = new Provider(ISSUER, {
   },
   responseTypes: ['code id_token', 'code'],
   clientAuthMethods,
+  ...(JSON.parse(process.env.SETUP || '{}').plan === 'fapi-ciba-id1-test-plan' && JSON.parse(process.env.SETUP).ciba_mode === 'ping' && {
+    fetch: (url, options) => {
+      delete options.dispatcher; // eslint-disable-line no-param-reassign
+      return globalThis.fetch(url, options);
+    },
+  }),
   enabledJWA: {
     authorizationSigningAlgValues: ALGS,
     idTokenSigningAlgValues: ALGS,

@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign, no-plusplus */
 
 import { createInterface as readline } from 'node:readline';
 import { inspect } from 'node:util';
@@ -50,15 +50,41 @@ class Block {
     if (!this[this.active]) {
       this[this.active] = [buffer];
     } else {
-      while (buffer.indexOf('*') === 0 || buffer.indexOf(' ') === 0) {
+      // Strip leading * characters
+      while (buffer.length && buffer[0] === 0x2A) {
         buffer = buffer.slice(1);
+      }
+
+      // Count leading spaces
+      let spaceCount = 0;
+      while (buffer.length > spaceCount && buffer[spaceCount] === 0x20) {
+        spaceCount += 1;
+      }
+
+      // Check if this is a list item (- or 1. after spaces)
+      const afterSpaces = buffer.slice(spaceCount).toString();
+      const isListItem = afterSpaces.startsWith('-') || /^\d+\./.test(afterSpaces);
+
+      if (isListItem) {
+        // Track base indentation per section to preserve sub-list indentation
+        const bliKey = `_baseListIndent_${this.active}`;
+        if (this[bliKey] === undefined) {
+          this[bliKey] = spaceCount;
+        }
+        const relativeIndent = Math.max(0, spaceCount - this[bliKey]);
+        buffer = Buffer.from(`${' '.repeat(relativeIndent)}${afterSpaces}`);
+      } else {
+        // Strip all leading spaces for non-list content
+        buffer = buffer.slice(spaceCount);
       }
 
       if (buffer.indexOf('@indent@') === 0) {
         buffer = buffer.slice(10);
       }
 
-      if (buffer.indexOf('-') === 0 || /^\d+\./.exec(buffer) || buffer.indexOf('```') !== -1 || buffer.indexOf('|') === 0) {
+      const bufStr = buffer.toString();
+      const trimmedBufStr = bufStr.trimStart();
+      if (trimmedBufStr.startsWith('-') || /^\d+\./.test(trimmedBufStr) || bufStr.includes('```') || trimmedBufStr.startsWith('|')) {
         const last = this[this.active].pop();
         if (last.toString().endsWith('\n')) {
           this[this.active].push(last);
@@ -69,8 +95,8 @@ class Block {
 
       if (buffer.length) {
         this[this.active].push(buffer);
-      } else if (this.active === 'description') {
-        this[this.active].push(Buffer.from('  \n'));
+      } else if (this.active === 'description' || this.active.startsWith('recommendation')) {
+        this[this.active].push(Buffer.from('\n\n'));
       }
     }
   }
@@ -84,12 +110,25 @@ const props = [
   'see',
   '@nodefault',
   '@skip',
+  '@important',
 ];
 
 let mid = Buffer.from('');
 
 function append(what) {
   mid = Buffer.concat([mid, Buffer.from(what)]);
+}
+
+function smartJoin(parts) {
+  let result = '';
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i].toString();
+    if (i > 0 && !result.endsWith('\n')) {
+      result += ' ';
+    }
+    result += part;
+  }
+  return result;
 }
 
 function expand(what) {
@@ -185,43 +224,105 @@ try {
     read.on('error', reject);
   });
 
-  const jwa = [];
-  let featuresIdx = 0;
-  const configuration = Object.keys(blocks).sort().filter((value) => {
-    if (!value) {
-      return false;
-    }
-    if (value.startsWith('enabledJWA')) {
-      jwa.push(value);
-      return false;
-    }
-    return true;
-  }, []).reduce((acc, cur) => {
-    if (cur.startsWith('features')) {
-      featuresIdx += 1;
-      acc.unshift(cur);
-    } else {
-      acc.push(cur);
-    }
-    return acc;
-  }, []);
+  const sortBlocks = (list) => list.sort((a, b) => {
+    const aImportant = '@important' in blocks[a];
+    const bImportant = '@important' in blocks[b];
+    if (aImportant !== bImportant) return aImportant ? -1 : 1;
+    return a.localeCompare(b);
+  });
 
-  const features = configuration.splice(0, featuresIdx).sort();
-  const clientsIdx = configuration.findIndex((x) => x === 'clients');
-  const clients = configuration.splice(clientsIdx, 1);
-  const adapterIdx = configuration.findIndex((x) => x === 'adapter');
-  const adapter = configuration.splice(adapterIdx, 1);
-  const jwksIdx = configuration.findIndex((x) => x === 'jwks');
-  const jwks = configuration.splice(jwksIdx, 1);
-  const findAccountIdx = configuration.findIndex((x) => x === 'findAccount');
-  const findAccount = configuration.splice(findAccountIdx, 1);
+  const allBlocks = Object.keys(blocks).filter((value) => value && !('@skip' in blocks[value]));
+
+  // Separate into categories
+  const featureBlocks = []; // top-level features.X (not sub-options like features.X.Y)
+  const topLevel = [];
+
+  for (const name of allBlocks) {
+    if (name.startsWith('features.')) {
+      featureBlocks.push(name);
+    } else {
+      topLevel.push(name);
+    }
+  }
+
+  // Split features into parent-level (features.X) and sub-options (features.X.Y)
+  const featureParents = featureBlocks.filter((f) => f.split('.').length === 2);
+  const featureChildren = featureBlocks.filter((f) => f.split('.').length > 2);
+
+  // Split parent features into stable and experimental
+  const stableFeatures = featureParents.filter((f) => {
+    const value = get(defaults, f);
+    return !(typeof value === 'object' && value !== null && 'ack' in value);
+  });
+  const experimentalFeatures = featureParents.filter((f) => {
+    const value = get(defaults, f);
+    return typeof value === 'object' && value !== null && 'ack' in value;
+  });
+
+  // Sort each group: important first, then alphabetically
+  sortBlocks(stableFeatures);
+  sortBlocks(experimentalFeatures);
+  sortBlocks(topLevel);
+  sortBlocks(featureChildren);
+
+  // Build the ordered feature list: stable features first, then experimental
+  const orderedFeatures = [...stableFeatures, ...experimentalFeatures];
+
+  // Build the final ordered block list
+  const orderedBlocks = [];
+  for (const block of topLevel) {
+    orderedBlocks.push(block);
+    if (block === 'features') {
+      // Insert all feature blocks (parents + their children) right after 'features'
+      for (const parent of orderedFeatures) {
+        orderedBlocks.push(parent);
+        // Add any sub-options for this feature
+        const children = featureChildren.filter((c) => c.startsWith(`${parent}.`));
+        sortBlocks(children);
+        orderedBlocks.push(...children);
+      }
+    }
+  }
+
+  // Generate Table of Contents
+  const tocAnchor = (block) => block.replace(/[.]/g, '').toLowerCase();
+
+  append('\n**Table of Contents**\n\n');
+  append('> ❗ marks the configuration you most likely want to take a look at.\n\n');
+
+  let inExperimental = false;
+  for (const block of orderedBlocks) {
+    // Skip child/sub options in the ToC
+    if (block.includes('.') && !block.startsWith('features.')) continue; // eslint-disable-line no-continue
+    if (block.startsWith('features.') && block.split('.').length > 2) continue; // eslint-disable-line no-continue
+
+    const section = blocks[block];
+    const isImportant = '@important' in section;
+    const mark = isImportant ? ' ❗' : '';
+    const rawTitle = section.title ? section.title.toString().trim().replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') : ''; // eslint-disable-line redos/no-vulnerable
+    const title = rawTitle ? ` - ${rawTitle}` : '';
+
+    if (block.startsWith('features.')) {
+      const isExp = experimentalFeatures.includes(block);
+      if (isExp && !inExperimental) {
+        inExperimental = true;
+        append('  - Experimental features:\n');
+      }
+
+      const featureName = block.split('.').slice(1).join('.');
+      const indent = inExperimental ? '    ' : '  ';
+      append(`${indent}- [${featureName}${mark}](#${tocAnchor(block)})${title}\n`);
+    } else {
+      if (inExperimental) inExperimental = false;
+      append(`- [${block}${mark}](#${tocAnchor(block)})${title}\n`);
+    }
+  }
+  append('\n');
 
   let first = true;
   let hidden;
   let prev;
-  for (const block of [
-    ...adapter, ...clients, ...findAccount, ...jwks, ...features, ...configuration, ...jwa,
-  ]) {
+  for (const block of orderedBlocks) {
     const section = blocks[block];
 
     if ('@skip' in section) {
@@ -271,7 +372,7 @@ try {
     }
 
     if (section.description) {
-      append(`${capitalizeSentences(section.description.join(' '))}  \n\n`);
+      append(`${capitalizeSentences(smartJoin(section.description))}  \n\n`);
     }
 
     if (section.see) {
@@ -286,7 +387,7 @@ try {
     }
 
     Object.keys(section).filter((x) => x.startsWith('recommendation')).forEach((prop) => {
-      append(`_**recommendation**_: ${section[prop].join(' ')}  \n\n`);
+      append(`_**recommendation**_: ${smartJoin(section[prop])}  \n\n`);
     });
 
     if (!('@nodefault' in section)) {
@@ -385,7 +486,7 @@ try {
           lines.forEach(append);
         } else {
           const lines = parts.splice(0, until === -1 ? parts.length : until);
-          append(`\n${capitalizeSentences(lines.join(' '))}  \n\n`);
+          append(`\n${capitalizeSentences(smartJoin(lines))}  \n\n`);
         }
       }
 
@@ -401,7 +502,7 @@ try {
   const pre = conf.slice(0, conf.indexOf(comStart) + comStart.length);
   const post = conf.slice(conf.indexOf(comEnd));
 
-  writeFileSync('./docs/README.md', Buffer.concat([pre, mid, post]));
+  writeFileSync('./docs/README.md', Buffer.concat([pre, Buffer.from('\n'), mid, post]));
 } catch (err) {
   console.error(err); // eslint-disable-line no-console
   process.exitCode = 1;

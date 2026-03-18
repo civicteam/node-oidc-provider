@@ -9,7 +9,7 @@ merge(config.features, {
   backchannelLogout: { enabled: true },
   claimsParameter: { enabled: true },
   rpInitiatedLogout: { enabled: false },
-  pushedAuthorizationRequests: { enabled: false },
+  pushedAuthorizationRequests: { enabled: true },
 });
 
 config.extraParams = {
@@ -29,6 +29,14 @@ export default {
       redirect_uris: [],
       token_endpoint_auth_method: 'none',
       application_type: 'native',
+    }, {
+      client_id: 'client-par-required',
+      grant_types: ['urn:ietf:params:oauth:grant-type:device_code', 'refresh_token'],
+      response_types: [],
+      redirect_uris: [],
+      token_endpoint_auth_method: 'none',
+      application_type: 'native',
+      require_pushed_authorization_requests: true,
     }, {
       client_id: 'client-other',
       grant_types: ['urn:ietf:params:oauth:grant-type:device_code', 'refresh_token'],
