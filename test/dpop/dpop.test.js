@@ -658,6 +658,7 @@ describe('features.dPoP', () => {
   describe('authorization flow', () => {
     describe('without dpop_jkt', () => {
       beforeEach(async function () {
+        // biome-ignore lint/suspicious/noAssignInExpressions: test pattern
         const auth = this.auth = new this.AuthorizationRequest({
           response_type: 'code',
           scope: 'openid offline_access',
@@ -700,6 +701,7 @@ describe('features.dPoP', () => {
 
     describe('with dpop_jkt', () => {
       beforeEach(async function () {
+        // biome-ignore lint/suspicious/noAssignInExpressions: test pattern
         const auth = this.auth = new this.AuthorizationRequest({
           response_type: 'code',
           scope: 'openid offline_access',
@@ -784,6 +786,7 @@ describe('features.dPoP', () => {
 
     describe('refresh_token', () => {
       beforeEach(async function () {
+        // biome-ignore lint/suspicious/noAssignInExpressions: test pattern
         const auth = this.auth = new this.AuthorizationRequest({
           response_type: 'code',
           scope: 'openid offline_access',
@@ -837,6 +840,7 @@ describe('features.dPoP', () => {
 
   describe('authorization flow (public client)', () => {
     beforeEach(async function () {
+      // biome-ignore lint/suspicious/noAssignInExpressions: test pattern
       const auth = this.auth = new this.AuthorizationRequest({
         client_id: 'client-none',
         response_type: 'code',
@@ -962,6 +966,16 @@ describe('features.dPoP', () => {
         .type('form')
         .expect(400)
         .expect({ error: 'invalid_dpop_proof', error_description: 'invalid DPoP key binding' });
+    });
+
+    it('should be 400 for malformed htu', async function () {
+      await this.agent.post('/token')
+        .auth('client', 'secret')
+        .send({ grant_type: 'client_credentials' })
+        .set('DPoP', await DPoP(this.keypair, 'not a url', 'POST'))
+        .type('form')
+        .expect(400)
+        .expect({ error: 'invalid_dpop_proof', error_description: 'DPoP proof htu mismatch' });
     });
   });
 

@@ -1,4 +1,3 @@
-/* eslint-disable prefer-arrow-callback */
 import { expect } from 'chai';
 
 import isConstructable from '../../lib/helpers/type_validators.js';
@@ -14,6 +13,7 @@ describe('type validators helper', () => {
 
   it('should be successfull executed if argument is constructable', () => {
     expect(isConstructable(class {})).to.be.true;
+    // biome-ignore lint/complexity/useArrowFunction: test intentionally uses a function expression to verify constructable detection
     expect(isConstructable(function () {})).to.be.true;
   });
 });

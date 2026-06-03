@@ -1,4 +1,3 @@
-/* eslint-disable no-console, camelcase, no-unused-vars */
 import { strict as assert } from 'node:assert';
 import * as querystring from 'node:querystring';
 import { inspect } from 'node:util';
@@ -7,6 +6,7 @@ import isEmpty from 'lodash/isEmpty.js';
 import { urlencoded } from 'express';
 
 import Account from '../support/account.js';
+import htmlSafe from '../support/html_safe.js';
 import { errors } from '../../lib/index.js'; // from 'oidc-provider';
 
 const body = urlencoded({ extended: false });
@@ -18,11 +18,11 @@ const debug = (obj) => querystring.stringify(Object.entries(obj).reduce((acc, [k
   acc[key] = inspect(value, { depth: null });
   return acc;
 }, {}), '<br/>', ': ', {
-  encodeURIComponent(value) { return keys.has(value) ? `<strong>${value}</strong>` : value; },
+  encodeURIComponent(value) { return keys.has(value) ? `<strong>${value}</strong>` : htmlSafe(value); },
 });
 const { SessionNotFound } = errors;
 export default (app, provider) => {
-  app.use((req, res, next) => {
+  app.use((_req, res, next) => {
     const orig = res.render;
     // you'll probably want to use a full blown render engine capable of layouts
     res.render = (view, locals) => {
@@ -37,7 +37,7 @@ export default (app, provider) => {
     next();
   });
 
-  function setNoCache(req, res, next) {
+  function setNoCache(_req, res, next) {
     res.set('cache-control', 'no-store');
     next();
   }
@@ -164,7 +164,7 @@ export default (app, provider) => {
     }
   });
 
-  app.use((err, req, res, next) => {
+  app.use((err, _req, _res, next) => {
     if (err instanceof SessionNotFound) {
       // handle interaction expired / session not found error
     }

@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import { parse as parseLocation } from 'node:url';
 
 import { expect } from 'chai';
@@ -10,7 +8,7 @@ import { decode as decodeJWT } from '../../lib/helpers/jwt.js';
 describe('distributed and aggregated claims', () => {
   before(bootstrap(import.meta.url));
   before(function () {
-    i(this.provider).configuration.findAccount = (ctx, id) => Promise.resolve({
+    i(this.provider).configuration.findAccount = (_ctx, id) => Promise.resolve({
       accountId: id,
       claims() {
         return {
