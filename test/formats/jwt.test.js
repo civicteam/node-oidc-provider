@@ -1,5 +1,3 @@
-/* eslint-disable no-shadow */
-/* eslint-disable no-param-reassign */
 import { strict as assert } from 'node:assert';
 import * as crypto from 'node:crypto';
 import * as util from 'node:util';
@@ -60,14 +58,12 @@ describe('jwt format', () => {
     audience: 'foo',
   });
 
-  /* eslint-disable object-property-newline */
   const fullPayload = {
     accountId, claims, clientId, grantId, scope, sid, consumed, acr, amr, authTime, nonce,
     redirectUri, codeChallenge, codeChallengeMethod, error, errorDescription, params,
     userCode, deviceInfo, gty, resource, policies, sessionUid, expiresWithSession,
     'x5t#S256': s256, inFlight, iiat, rotations, extra, jkt: s256, resourceServer,
   };
-  /* eslint-enable object-property-newline */
 
   afterEach(sinon.restore);
 
@@ -118,6 +114,38 @@ describe('jwt format', () => {
       const header = decode(jwt.split('.')[0]);
       expect(header).to.have.property('alg', 'RS256');
       expect(header).to.have.property('kid', i(this.provider).keystore.selectForSign({ alg: 'RS256' })[0].kid);
+    });
+
+    it('selects provider keys allowed for signing JWT access tokens', async function () {
+      const { keystore } = i(this.provider);
+      const original = [...keystore];
+      const [source] = keystore.selectForSign({ alg: 'RS256' });
+      const jwk = { ...source, key_ops: ['sign'] };
+
+      keystore.clear();
+      keystore.add(jwk);
+
+      try {
+        const resourceServer = new ResourceServer(resource, {
+          accessTokenFormat: 'jwt',
+          audience: 'foo',
+          jwt: {
+            sign: { alg: 'RS256', kid: jwk.kid },
+          },
+        });
+
+        const client = await this.provider.Client.find(clientId);
+        const token = new this.provider.AccessToken({ client, ...fullPayload, resourceServer });
+        const jwt = await token.save();
+
+        const header = decode(jwt.split('.')[0]);
+        expect(header).to.have.property('kid', jwk.kid);
+      } finally {
+        keystore.clear();
+        for (const key of original) {
+          keystore.add(key);
+        }
+      }
     });
 
     it('can be used to specify the signing algorithm to be HMAC (buffer)', async function () {
@@ -563,7 +591,6 @@ describe('jwt format', () => {
     });
 
     for (const prop of ['alg', 'enc', 'key']) {
-      // eslint-disable-next-line no-loop-func
       it(`ensures JWE Configuration has ${prop}`, async function () {
         const resourceServer = new ResourceServer(resource, {
           accessTokenFormat: 'jwt',
@@ -692,7 +719,7 @@ describe('jwt format', () => {
       const client = await this.provider.Client.find(clientId);
       const accessToken = new this.provider.AccessToken({ client, ...fullPayload });
       accessToken.resourceServer = resourceServer;
-      i(this.provider).configuration.formats.customizers.jwt = (ctx, token, jwt) => {
+      i(this.provider).configuration.formats.customizers.jwt = (_ctx, token, jwt) => {
         expect(token).to.equal(accessToken);
         expect(jwt).to.have.property('payload');
         expect(jwt).to.have.property('header', undefined);

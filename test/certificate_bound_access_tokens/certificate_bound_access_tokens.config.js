@@ -13,7 +13,7 @@ merge(config.features, {
     getCertificate(ctx) {
       try {
         return new X509Certificate(Buffer.from(ctx.get('x-ssl-client-cert'), 'base64'));
-      } catch (e) {
+      } catch {
         return undefined;
       }
     },
@@ -23,7 +23,7 @@ merge(config.features, {
   deviceFlow: { enabled: true },
   ciba: {
     enabled: true,
-    processLoginHint(ctx, loginHint) {
+    processLoginHint(_ctx, loginHint) {
       return loginHint;
     },
     validateBindingMessage() {},

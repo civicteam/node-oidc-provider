@@ -1,6 +1,62 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [9.8.4](https://github.com/panva/node-oidc-provider/compare/v9.8.3...v9.8.4) (2026-05-29)
+
+
+### Refactor
+
+* detect non-node runtimes before checking for LTS ([b3be0fd](https://github.com/panva/node-oidc-provider/commit/b3be0fd4885fa718df3959add2cceb04d464d608)), closes [#1424](https://github.com/panva/node-oidc-provider/issues/1424)
+* isolate SSRF dispatcher protection ([1f64996](https://github.com/panva/node-oidc-provider/commit/1f649965a3c62b1f8ee554abe08e59033ddd0f21))
+
+## [9.8.3](https://github.com/panva/node-oidc-provider/compare/v9.8.2...v9.8.3) (2026-04-27)
+
+
+### Fixes
+
+* await registration token policy ([6269602](https://github.com/panva/node-oidc-provider/commit/62696027a9c579576b0a55d9a899d4143973d809))
+* pass ciba user code to verifier ([a340869](https://github.com/panva/node-oidc-provider/commit/a3408691fc9f4404a05ba16b9112d2ce6fbe8df6))
+* reject malformed dpop htu with a clearer message ([1b6146c](https://github.com/panva/node-oidc-provider/commit/1b6146c82f9557a8db87e2f91b360b370a8fb14f))
+* select signing keys for jwt access tokens ([1d6df9c](https://github.com/panva/node-oidc-provider/commit/1d6df9c72f8d859be6261726c6854a902e13c996))
+* validate ciba notification tokens ([2807a8f](https://github.com/panva/node-oidc-provider/commit/2807a8f1cdaff7b7c183f62033d31d19a7a4e201))
+
+## [9.8.2](https://github.com/panva/node-oidc-provider/compare/v9.8.1...v9.8.2) (2026-04-17)
+
+
+### Fixes
+
+* html-escape debug data sent to development-only interactions ([924d25c](https://github.com/panva/node-oidc-provider/commit/924d25c2553ec5da103dc48708fa5f9f1bbcf402)), closes [#1414](https://github.com/panva/node-oidc-provider/issues/1414)
+
+## [9.8.1](https://github.com/panva/node-oidc-provider/compare/v9.8.0...v9.8.1) (2026-04-15)
+
+
+### Refactor
+
+* relax native app custom URI scheme validation ([75be6ce](https://github.com/panva/node-oidc-provider/commit/75be6ce14449d5e59d6499d07bd667a8e1b1577c)), closes [#1411](https://github.com/panva/node-oidc-provider/issues/1411)
+
+## [9.8.0](https://github.com/panva/node-oidc-provider/compare/v9.7.1...v9.8.0) (2026-04-07)
+
+
+### Features
+
+* promote rpMetadataChoices to stable ([cc8cfcc](https://github.com/panva/node-oidc-provider/commit/cc8cfcc39fcef4eef298bc295b614bcd7343f53d))
+
+
+### Refactor
+
+* do not depend on undici being part of the bundle ([2ffec73](https://github.com/panva/node-oidc-provider/commit/2ffec73aa8001e79d6df025b39e59f6d7f3f1c29))
+
+## [9.7.1](https://github.com/panva/node-oidc-provider/compare/v9.7.0...v9.7.1) (2026-03-18)
+
+
+### Refactor
+
+* **CIMD:** filter unrecognized array members before validating ([969edba](https://github.com/panva/node-oidc-provider/commit/969edbaee66aae84bb50433c66efde774a261594)), closes [#1398](https://github.com/panva/node-oidc-provider/issues/1398)
+* fetch_body_check.js now returns early when limit is Infinite ([a794f51](https://github.com/panva/node-oidc-provider/commit/a794f518175b089b5f4ee483d7206180c5aeab0f))
+* fixup grant_types and response_types mismatch instead of rejecting ([81538bf](https://github.com/panva/node-oidc-provider/commit/81538bf55ae3fc963f6d8cd4ed8f8c801ff48ee2))
+* process client schema after custom metadata processing ([35fb736](https://github.com/panva/node-oidc-provider/commit/35fb736a0d927dbf92b555b067b267f7146e2158))
+* pull csrf into a shared module ([6239f17](https://github.com/panva/node-oidc-provider/commit/6239f175a8ce3467db171f6e24969945ff19b91f))
 
 ## [9.7.0](https://github.com/panva/node-oidc-provider/compare/v9.6.1...v9.7.0) (2026-03-06)
 

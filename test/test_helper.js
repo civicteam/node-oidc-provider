@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import { parse, pathToFileURL } from 'node:url';
 import * as crypto from 'node:crypto';
 import * as path from 'node:path';
@@ -11,12 +9,12 @@ import { setGlobalDispatcher, MockAgent } from 'undici';
 import sinon from 'sinon';
 import { dirname } from 'desm';
 import flatten from 'lodash/flatten.js';
-import { Request } from 'superagent'; // eslint-disable-line import/no-extraneous-dependencies
+import { Request } from 'superagent';
 import { agent as supertest } from 'supertest';
 import { expect } from 'chai';
 import koaMount from 'koa-mount';
 import base64url from 'base64url';
-import { CookieAccessInfo } from 'cookiejar'; // eslint-disable-line import/no-extraneous-dependencies
+import { CookieAccessInfo } from 'cookiejar';
 import Express from 'express';
 import Koa from 'koa';
 
@@ -28,7 +26,20 @@ import instance from '../lib/helpers/weak_cache.js';
 import { Account, TestAdapter } from './models.js';
 import keys from './keys.js';
 
-const fetchAgent = new MockAgent();
+// TODO: Remove once https://github.com/nodejs/undici/issues/5036 is fixed in a released undici version.
+// See https://github.com/nodejs/undici/pull/5052.
+class CompatibleMockAgent extends MockAgent {
+  dispatch(opts, handler) {
+    if (opts.allowH2 === false) {
+      opts = { ...opts };
+      delete opts.allowH2;
+    }
+
+    return super.dispatch(opts, handler);
+  }
+}
+
+const fetchAgent = new CompatibleMockAgent();
 fetchAgent.disableNetConnect();
 setGlobalDispatcher(fetchAgent);
 
@@ -119,7 +130,6 @@ export default function testHelper(importMetaUrl, {
   mountTo = mountVia ? process.env.MOUNT_TO || '/' : '/',
 } = {}) {
   const dir = dirname(importMetaUrl);
-  // eslint-disable-next-line no-param-reassign
   base ??= path.basename(dir);
   const afterPromises = [];
 
@@ -150,13 +160,12 @@ export default function testHelper(importMetaUrl, {
       jwks: { keys },
       adapter: TestAdapter,
       fetch: (url, options) => {
-        delete options.dispatcher; // eslint-disable-line no-param-reassign
+        delete options.dispatcher;
         return globalThis.fetch(url, options);
       },
       ...config,
     });
 
-    // eslint-disable-next-line prefer-arrow-callback
     provider.middleware.push(async function neverInvoked(ctx) {
       ctx.throw(500, 'this is never invoked');
     });
@@ -245,7 +254,7 @@ export default function testHelper(importMetaUrl, {
     class AuthorizationRequest {
       constructor(parameters = {}) {
         if (parameters.claims && typeof parameters.claims !== 'string') {
-          parameters.claims = JSON.stringify(parameters.claims); // eslint-disable-line no-param-reassign
+          parameters.claims = JSON.stringify(parameters.claims);
         }
 
         Object.assign(this, parameters);
@@ -253,14 +262,14 @@ export default function testHelper(importMetaUrl, {
         this.client_id = 'client_id' in parameters ? parameters.client_id : clients[0].client_id;
         const c = clients.find((cl) => cl.client_id === this.client_id);
         this.state = 'state' in parameters ? parameters.state : crypto.randomBytes(16).toString('base64url');
-        this.redirect_uri = 'redirect_uri' in parameters ? parameters.redirect_uri : parameters.redirect_uri || (c && c.redirect_uris[0]);
+        this.redirect_uri = 'redirect_uri' in parameters ? parameters.redirect_uri : parameters.redirect_uri || (c?.redirect_uris[0]);
         this.res = {};
 
-        if (this.response_type && this.response_type.includes('id_token')) {
+        if (this.response_type?.includes('id_token')) {
           this.nonce = 'nonce' in parameters ? parameters.nonce : crypto.randomBytes(16).toString('base64url');
         }
 
-        if (this.response_type && this.response_type.includes('code')) {
+        if (this.response_type?.includes('code')) {
           this.code_challenge_method = 'code_challenge_method' in parameters ? parameters.code_challenge_method : 'S256';
           this.code_verifier = crypto.randomBytes(32).toString('base64url');
           this.code_challenge = 'code_challenge' in parameters ? parameters.code_challenge : crypto.hash('sha256', this.code_verifier, 'base64url');
@@ -329,7 +338,7 @@ export default function testHelper(importMetaUrl, {
       }
     }
 
-    AuthorizationRequest.prototype.validateInteraction = (eName, ...eReasons) => { // eslint-disable-line arrow-body-style
+    AuthorizationRequest.prototype.validateInteraction = (eName, ...eReasons) => {
       return (response) => {
         const uid = readCookie(getSetCookies(response)[0]);
         const { prompt: { name, reasons } } = TestAdapter.for('Interaction').syncFind(uid);
@@ -338,10 +347,10 @@ export default function testHelper(importMetaUrl, {
       };
     };
 
-    AuthorizationRequest.prototype.validateFragment = function (response) {
+    AuthorizationRequest.prototype.validateFragment = (response) => {
       const { hash } = parse(response.headers.location);
       expect(hash).to.exist;
-      response.headers.location = response.headers.location.replace('#', '?'); // eslint-disable-line no-param-reassign
+      response.headers.location = response.headers.location.replace('#', '?');
     };
 
     AuthorizationRequest.prototype.validatePresence = function (properties, all) {
@@ -352,7 +361,6 @@ export default function testHelper(importMetaUrl, {
         absolute = all;
       }
 
-      // eslint-disable-next-line no-param-reassign
       properties = (!absolute || properties.includes('id_token') || properties.includes('response')) ? properties : [...new Set(properties.concat('iss'))];
 
       return (response) => {
@@ -368,8 +376,7 @@ export default function testHelper(importMetaUrl, {
       };
     };
 
-    AuthorizationRequest.prototype.validateResponseParameter = function (parameter, expected) {
-      return (response) => {
+    AuthorizationRequest.prototype.validateResponseParameter = (parameter, expected) => (response) => {
         const { query: { [parameter]: value } } = parse(response.headers.location, true);
         if (expected.exec) {
           expect(value).to.match(expected);
@@ -377,7 +384,6 @@ export default function testHelper(importMetaUrl, {
           expect(value).to.equal(expected);
         }
       };
-    };
 
     AuthorizationRequest.prototype.validateError = function (expected) {
       return this.validateResponseParameter('error', expected);
@@ -425,7 +431,7 @@ export default function testHelper(importMetaUrl, {
       if (!clientId && clients) clientId = clients[0].client_id;
       try {
         return session.authorizations[clientId].grantId;
-      } catch (err) {
+      } catch {
         throw new Error('getGrantId() failed');
       }
     }
@@ -467,7 +473,7 @@ export default function testHelper(importMetaUrl, {
     function getTokenJti(token) {
       try {
         return jwt(token);
-      } catch (err) {}
+      } catch {}
 
       return token; // opaque
     }

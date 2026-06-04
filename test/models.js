@@ -1,5 +1,3 @@
-/* eslint-disable max-classes-per-file */
-
 import { strict as assert } from 'node:assert';
 
 import { expect } from 'chai';
@@ -17,8 +15,9 @@ setStorage(map);
 const testStorage = new Map();
 
 export class TestAdapter extends MemoryAdapter {
+  // biome-ignore lint/correctness/noUnreachableSuper: intentional caching of adapter instances by name
   constructor(name) {
-    // eslint-disable-next-line no-constructor-return
+    // biome-ignore lint/correctness/noConstructorReturn: intentional caching of adapter instances by name
     if (testStorage.has(name)) return testStorage.get(name);
     super(name);
     this.store = map;
@@ -27,7 +26,7 @@ export class TestAdapter extends MemoryAdapter {
 
   static for(name) {
     if (testStorage.has(name)) return testStorage.get(name);
-    return new this(name);
+    return new TestAdapter(name);
   }
 
   get(key) {
@@ -38,7 +37,7 @@ export class TestAdapter extends MemoryAdapter {
     map.clear();
   }
 
-  clear() { // eslint-disable-line class-methods-use-this
+  clear() {
     map.clear();
   }
 
@@ -109,8 +108,7 @@ export class Account {
     };
   }
 
-  // eslint-disable-next-line no-unused-vars
-  static async findAccount(ctx, sub, token) {
+  static async findAccount(_ctx, sub, _token) {
     if (sub === 'notfound') {
       return undefined;
     }

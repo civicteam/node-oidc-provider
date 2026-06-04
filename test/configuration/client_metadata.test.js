@@ -68,7 +68,7 @@ describe('Client metadata validation', () => {
 
   const mustBeString = (
     prop,
-    values = [[], 123, true, null, false, {}, ''], // eslint-disable-line default-param-last
+    values = [[], 123, true, null, false, {}, ''],
     metadata,
     configuration,
   ) => {
@@ -76,7 +76,6 @@ describe('Client metadata validation', () => {
       let msg = util.format('must be a string, %j provided', value);
       if (metadata) msg = util.format(`${msg}, [client %j]`, omit(metadata, ['jwks.keys']));
       if (configuration) msg = util.format(`${msg}, [provider %j]`, configuration);
-      // eslint-disable-next-line max-len
       it(msg, () => assert.rejects(register({ ...metadata, [prop]: value }, configuration), (err) => {
         if (prop === 'redirect_uris') {
           expect(err.message).to.equal('invalid_redirect_uri');
@@ -120,7 +119,6 @@ describe('Client metadata validation', () => {
     });
   };
 
-  // eslint-disable-next-line default-param-last
   const mustBeArray = (prop, values = [{}, 'string', 123, true, null, false], configuration) => {
     values.forEach((value) => {
       let msg = util.format('must be a array, %j provided', value);
@@ -227,7 +225,6 @@ describe('Client metadata validation', () => {
     let msg = util.format('passes %j', value);
     if (metadata) msg = util.format(`${msg}, [client %j]`, omit(metadata, ['jwks.keys']));
     if (configuration) msg = util.format(`${msg}, [provider %j]`, configuration);
-    // eslint-disable-next-line max-len
     it(msg, () => register({ ...metadata, [prop]: value }, configuration).then(assertion, (err) => {
       if (err instanceof InvalidClientMetadata) {
         throw new Error(`InvalidClientMetadata received ${err.message} ${err.error_description}`);
@@ -239,7 +236,6 @@ describe('Client metadata validation', () => {
     let msg = util.format('rejects %j', value);
     if (metadata) msg = util.format(`${msg}, [client %j]`, omit(metadata, ['jwks.keys']));
     if (configuration) msg = util.format(`${msg}, [provider %j]`, configuration);
-    // eslint-disable-next-line max-len
     it(msg, () => assert.rejects(register({ ...metadata, [prop]: value }, configuration), (err) => {
       if (prop === 'redirect_uris') {
         expect(err.message).to.equal('invalid_redirect_uri');
@@ -373,20 +369,31 @@ describe('Client metadata validation', () => {
     defaultsTo(this.title, ['authorization_code']);
     mustBeArray(this.title);
     allows(this.title, ['authorization_code', 'refresh_token']);
+    allows(this.title, [], { response_types: ['none'] });
     rejects(this.title, [123], /must only contain strings$/);
-    rejects(this.title, []);
     rejects(this.title, ['not-a-type']);
-    rejects(this.title, ['implicit'], undefined, {
+
+    // grant types auto-fixup
+    allows(this.title, [], undefined, undefined, (client) => {
+      expect(client.metadata()).to.have.property('grant_types').and.deep.eql(['authorization_code']);
+    });
+    allows(this.title, ['implicit'], {
       // misses authorization_code
       response_types: ['id_token', 'code'],
+    }, undefined, (client) => {
+      expect(client.metadata()).to.have.property('grant_types').and.deep.eql(['implicit', 'authorization_code']);
     });
-    rejects(this.title, ['authorization_code'], undefined, {
-      // misses implicit
+    allows(this.title, ['authorization_code'], {
+      // misses code in response_types
       response_types: ['id_token'],
+    }, undefined, (client) => {
+      expect(client.metadata()).to.have.property('grant_types').and.deep.eql(['implicit']);
     });
-    rejects(this.title, ['authorization_code'], undefined, {
-      // misses implicit
-      response_types: ['token'],
+    allows(this.title, ['authorization_code', 'implicit'], {
+      // misses token or id_token in response_types
+      response_types: ['code'],
+    }, undefined, (client) => {
+      expect(client.metadata()).to.have.property('grant_types').and.deep.eql(['authorization_code']);
     });
   });
 
@@ -495,11 +502,28 @@ describe('Client metadata validation', () => {
     rejects(this.title, ['not-a-uri'], undefined, {
       application_type: 'native',
     });
+    rejects(this.title, ['https://localhost/op/callback'], /for native clients using claimed HTTPS URIs must not be using localhost as hostname/, {
+      application_type: 'native',
+    });
+    allows(this.title, ['com.example.app://localhost/op/callback', 'com.example.app:/op/callback'], {
+      application_type: 'native',
+    });
+    allows(this.title, ['myapp:/op/callback'], {
+      application_type: 'native',
+    });
+    allows(this.title, ['cursor://anysphere.cursor-mcp/oauth/callback'], {
+      application_type: 'native',
+    });
     rejects(this.title, ['http://foo/bar'], undefined, {
       application_type: 'web',
       grant_types: ['implicit'],
       response_types: ['id_token'],
     });
+    for (const scheme of ['javascript', 'vbscript', 'data', 'blob', 'file', 'about']) {
+      rejects(this.title, [`${scheme}:foo`], `redirect_uris must not use the ${scheme} URI scheme`, {
+        application_type: 'native',
+      });
+    }
     it('has an schema invalidation hook for forcing https on implicit', async () => {
       const sandbox = sinon.createSandbox();
       sandbox.spy(DefaultProvider.Client.Schema.prototype, 'invalidate');
@@ -590,6 +614,11 @@ describe('Client metadata validation', () => {
       grant_types: ['implicit'],
       response_types: ['id_token'],
     });
+    for (const scheme of ['javascript', 'vbscript', 'data', 'blob', 'file', 'about']) {
+      rejects(this.title, [`${scheme}:foo`], `post_logout_redirect_uris must not use the ${scheme} URI scheme`, {
+        application_type: 'native',
+      });
+    }
   });
 
   context('request_object_signing_alg', function () {
@@ -679,7 +708,9 @@ describe('Client metadata validation', () => {
     );
 
     rejects(this.title, [123], /must only contain strings$/);
-    rejects(this.title, [], /must contain members$/);
+    allows(this.title, [], undefined, undefined, (client) => {
+      expect(client.metadata()).to.have.property('grant_types').and.deep.eql([]);
+    });
     rejects(this.title, ['not-a-type']);
     rejects(this.title, ['not-a-type', 'none']);
   });

@@ -133,7 +133,7 @@ describe('features.ciba', () => {
       const route = '/backchannel';
 
       it('minimal w/ login_hint', async function () {
-        const [, [, request, account, client]] = await Promise.all([
+        const [, [, request, account, client], verifyUserCode] = await Promise.all([
           this.agent.post(route)
             .send({
               scope: 'openid',
@@ -166,6 +166,7 @@ describe('features.ciba', () => {
         expect(request.params).to.deep.eql({
           client_id: 'client', login_hint: 'accountId', scope: 'openid', extra2: 'defaulted', extra: 'provided',
         });
+        expect(verifyUserCode[2]).to.be.undefined;
       });
 
       it('does not require PAR for clients with require_pushed_authorization_requests', async function () {
@@ -181,6 +182,42 @@ describe('features.ciba', () => {
           .expect((response) => {
             expect(response.body).to.have.keys('expires_in', 'auth_req_id');
           });
+      });
+
+      it('passes user_code to verifyUserCode', async function () {
+        const [, verifyUserCode] = await Promise.all([
+          this.agent.post(route)
+            .send({
+              scope: 'openid',
+              login_hint: 'accountId',
+              user_code: '1234',
+              client_id: 'client-user-code',
+            })
+            .type('form')
+            .expect(200)
+            .expect('content-type', /application\/json/),
+          once(emitter, 'verifyUserCode'),
+        ]);
+
+        expect(verifyUserCode[2]).to.equal('1234');
+      });
+
+      it('ignores client_notification_token when using poll', async function () {
+        const [, [, request]] = await Promise.all([
+          this.agent.post(route)
+            .send({
+              scope: 'openid',
+              login_hint: 'accountId',
+              client_id: 'client',
+              client_notification_token: 'foo bar',
+            })
+            .type('form')
+            .expect(200)
+            .expect('content-type', /application\/json/),
+          once(emitter, 'triggerAuthenticationDevice'),
+        ]);
+
+        expect(request.params).not.to.have.property('client_notification_token');
       });
 
       it('requested_expiry', async function () {
@@ -463,6 +500,62 @@ describe('features.ciba', () => {
             .expect({
               error: 'invalid_request',
               error_description: "missing required parameter 'client_notification_token'",
+            });
+        });
+
+        it('accepts the client_notification_token Bearer token syntax when using ping', async function () {
+          return this.agent.post(route)
+            .send({
+              client_id: 'client-ping',
+              scope: 'openid',
+              login_hint: 'accountId',
+              client_notification_token: 'abc-._~+/==',
+            })
+            .type('form')
+            .expect(200)
+            .expect('content-type', /application\/json/);
+        });
+
+        it('validates the client_notification_token syntax when using ping', async function () {
+          const values = [
+            'foo bar',
+            'foo:bar',
+            'foo=bar',
+            'foo,bar',
+          ];
+
+          for (const client_notification_token of values) {
+            await this.agent.post(route)
+              .send({
+                client_id: 'client-ping',
+                scope: 'openid',
+                login_hint: 'accountId',
+                client_notification_token,
+              })
+              .type('form')
+              .expect(400)
+              .expect('content-type', /application\/json/)
+              .expect({
+                error: 'invalid_request',
+                error_description: 'client_notification_token must be a valid Bearer token',
+              });
+          }
+        });
+
+        it('validates the client_notification_token length when using ping', async function () {
+          return this.agent.post(route)
+            .send({
+              client_id: 'client-ping',
+              scope: 'openid',
+              login_hint: 'accountId',
+              client_notification_token: 'a'.repeat(1025),
+            })
+            .type('form')
+            .expect(400)
+            .expect('content-type', /application\/json/)
+            .expect({
+              error: 'invalid_request',
+              error_description: 'client_notification_token must not exceed 1024 characters',
             });
         });
 
